@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- Выпадающее окно: фильтр по разделам каталога -->
+<div class="offcanvas offcanvas-end offcanvas-filter" tabindex="-1"
+     id="filterOffcanvas" aria-labelledby="filterOffcanvasLabel" th:fragment="filterPanel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="filterOffcanvasLabel">Фильтр</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column">
+        <!-- Тут будет список чекбоксов с разделами каталога -->
+        <div class="placeholder-box w-100"></div>
+
+        <div class="mt-auto text-end">
+            <button class="btn btn-brand" type="button">Применить</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
