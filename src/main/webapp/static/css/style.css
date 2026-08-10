@@ -1,0 +1,152 @@
+/* Общие стили каркаса приложения */
+
+:root {
+    --brand-purple: #4b0082;
+    --brand-blue: #33b5e5;
+    --footer-bg: #cbbcd8;
+    --page-bg: #e0e0e0;
+    --header-height: 90px;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--page-bg);
+}
+
+/* Основной контент растягивается, чтобы футер всегда был внизу */
+main {
+    flex: 1 0 auto;
+}
+
+/* ---------- Шапка ---------- */
+
+.app-header {
+    background-color: var(--brand-purple);
+}
+
+.app-header .navbar-brand {
+    color: #fff;
+    font-size: 1.6rem;
+}
+
+.app-header .navbar-brand:hover {
+    color: #fff;
+}
+
+.app-header .brand-logo {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #fff;
+    object-fit: contain;
+}
+
+.app-header .nav-icon {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+
+.app-header .nav-icon-link {
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.app-header .nav-icon-link:hover {
+    opacity: 0.85;
+}
+
+.btn-catalog {
+    background-color: var(--brand-blue);
+    border-color: var(--brand-blue);
+    padding: 0.5rem 0.75rem;
+}
+
+.search-form .form-control {
+    border-radius: 2rem 0 0 2rem;
+    height: 46px;
+}
+
+.search-form .btn {
+    border-radius: 0 2rem 2rem 0;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-left: none;
+    height: 46px;
+}
+
+.search-form .search-icon {
+    width: 22px;
+    height: 22px;
+}
+
+/* ---------- Выпадающие окна ---------- */
+
+/* Фиксированные размеры нужны, чтобы пустые окна было видно при проверке */
+.offcanvas-catalog {
+    --bs-offcanvas-width: 420px;
+}
+
+.offcanvas-filter {
+    --bs-offcanvas-width: 420px;
+}
+
+.dropdown-profile {
+    width: 280px;
+    height: 360px;
+}
+
+/* Заглушка под динамический контент */
+.placeholder-box {
+    min-height: 200px;
+    border: 1px dashed #adb5bd;
+    border-radius: 0.5rem;
+    background-color: #f8f9fa;
+}
+
+/* ---------- Кнопки ---------- */
+
+.btn-brand {
+    background-color: var(--brand-blue);
+    border-color: var(--brand-blue);
+    color: #000;
+    font-weight: 500;
+}
+
+.btn-brand:hover {
+    background-color: #23a3d8;
+    border-color: #23a3d8;
+    color: #000;
+}
+
+/* ---------- Футер ---------- */
+
+.app-footer {
+    flex-shrink: 0;
+    background-color: var(--footer-bg);
+    padding: 1.5rem 0;
+    text-align: center;
+}
+
+/* ---------- Страницы ошибок ---------- */
+
+.error-page {
+    background-color: #000;
+    color: #fff;
+    min-height: 60vh;
+}
+
+.error-page .error-code {
+    font-size: 6rem;
+    font-weight: 700;
+    line-height: 1;
+}
