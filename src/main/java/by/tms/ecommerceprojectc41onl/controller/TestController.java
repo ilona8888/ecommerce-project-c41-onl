@@ -9,6 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class TestController {
 
+    // Главная страница проекта - каталог товаров
+    @GetMapping("/")
+    public String home() {
+        return "index";
+    }
+
     // Главная страница - каталог товаров
     @GetMapping("/catalog")
     public String catalog() {
