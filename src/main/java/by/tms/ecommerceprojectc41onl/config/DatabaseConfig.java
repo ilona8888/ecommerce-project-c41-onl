@@ -20,7 +20,7 @@ public class DatabaseConfig {
     @Value("${db.password}")
     private String password;
 
-    @Value("${db.pool.max-size}")
+    @Value("${db.pool.maximumPoolSize}")
     private int maximumPoolSize;
 
     //Обработчик плейсхолдеров: читает application.properties и подставляет значения в @Value
