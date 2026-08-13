@@ -217,17 +217,17 @@ comment on column purchases.PRODUCTS_ID is 'ID товара';
 /*Таблица избранного*/
 create table FAVORITES
 (
-    /*ID пользователя -- первичный ключ*/
+    /*ID пользователя -- внешний ключ (USERS)*/
     USERS_ID    bigint    not null
-        constraint favorites_pk
-            primary key
-        /*Внешний ключ (USERS)*/
         constraint favorites_users_id_fk
             references USERS on delete cascade,
     /*ID товара -- внешний ключ (PRODUCTS)*/
     PRODUCTS_ID bigint    not null
         constraint favorites_products_id_fk
             references PRODUCTS on delete cascade,
+    /*Составной первичный ключ*/
+    constraint favorites_pk
+        primary key (USERS_ID, PRODUCTS_ID),
     /*Дата добавления*/
     DATE_ADDED  timestamp not null default now()
 );
