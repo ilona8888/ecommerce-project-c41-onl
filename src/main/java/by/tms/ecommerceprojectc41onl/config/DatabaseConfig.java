@@ -40,6 +40,7 @@ public class DatabaseConfig {
         config.setJdbcUrl(jdbcUrl);
         config.setUsername(username);
         config.setPassword(password);
+        if (maximumPoolSize < 1) throw new IllegalStateException("Illegal maximumPoolSize");
         config.setMaximumPoolSize(maximumPoolSize);
         return new HikariDataSource(config);
     }
