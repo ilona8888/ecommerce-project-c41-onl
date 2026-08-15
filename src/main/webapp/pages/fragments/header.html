@@ -42,7 +42,8 @@
                     </a>
 
                     <a class="nav-icon-link text-center" th:href="@{/favorites}">
-                        <img class="nav-icon d-block mx-auto" th:src="@{/static/img/icons/favouritesIcon.png}" alt="Избранное">
+                        <img class="nav-icon d-block mx-auto" th:src="@{/static/img/icons/favouritesIcon.png}"
+                             alt="Избранное">
                         <span>Избранное</span>
                     </a>
 
@@ -62,11 +63,12 @@
 
                             <!-- Тут будут пункты меню профиля в зависимости от роли
                                  (О продавце / Выйти / Удалить профиль) -->
+
                             <div class="w-100">
-                                <button class="btn btn-link w-100 fs-5 text-decoration-none" type="button"
-                                        data-bs-toggle="modal" data-bs-target="#loginModal">
+                                <a class="btn btn-link w-100 fs-5 text-decoration-none"
+                                   th:href="@{/login}">
                                     Войти
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -88,22 +90,6 @@
         <div class="offcanvas-body">
             <!-- Тут будет список разделов каталога (компьютеры, телефоны, телевизоры, книги и т.п.) -->
             <div class="placeholder-box w-100"></div>
-        </div>
-    </div>
-
-    <!-- Модальное окно авторизации -->
-    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Авторизация</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Тут будет форма авторизации (email, пароль, кнопки Log in / Sign in) -->
-                    <div class="placeholder-box w-100"></div>
-                </div>
-            </div>
         </div>
     </div>
 
