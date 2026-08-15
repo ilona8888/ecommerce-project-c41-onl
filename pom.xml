@@ -39,7 +39,6 @@
             <artifactId>hibernate-validator</artifactId>
             <version>9.1.2.Final</version>
         </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
