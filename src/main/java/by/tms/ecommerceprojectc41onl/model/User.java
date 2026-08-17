@@ -20,6 +20,7 @@ public class User {
     private LocalDate birthday;
     private UserRole role;
     private LocalDateTime createdDate;
+
     private List<Favorite> favorites = new ArrayList<>();
     private List<Purchase> purchases = new ArrayList<>();
 
