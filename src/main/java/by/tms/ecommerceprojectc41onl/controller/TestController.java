@@ -75,4 +75,11 @@ public class TestController {
     public String error500() {
         return "error/error-500";
     }
+
+    // Ошибка 500
+    @GetMapping("/checkError")
+    public String check() {
+        throw new RuntimeException("Тестовое исключение для проверки 500 ошибки");
+    }
+
 }

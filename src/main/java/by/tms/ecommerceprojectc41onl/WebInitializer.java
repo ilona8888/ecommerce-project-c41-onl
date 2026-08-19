@@ -27,5 +27,8 @@ public class WebInitializer extends AbstractAnnotationConfigDispatcherServletIni
 
         // Optionally also set maxFileSize, maxRequestSize, fileSizeThreshold
         registration.setMultipartConfig(new MultipartConfigElement(""));
+        registration.setInitParameter("throwExceptionIfNoHandlerFound", "true");
+
     }
+
 }
