@@ -31,7 +31,23 @@
         </div>
 
         <!-- Тут будет список комментариев с оценками -->
-        <div class="w-100 bg-light p-3 mt-4" style="min-height: 160px;"></div>
+        <div class="w-100 bg-light p-3 mt-4" style="min-height: 160px;">
+            <h4 class="mb-3">Отзывы</h4>
+            <p th:if="${reviews == null or #lists.isEmpty(reviews)}" class="text-muted mb-0">Отзывов пока нет.</p>
+            <div th:if="${reviews != null}" th:each="review : ${reviews}" class="card border-0 shadow-sm mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between gap-3">
+                        <strong th:text="${review.user.userName}">Пользователь</strong>
+                        <span class="text-warning" th:attr="aria-label=${review.rating + ' из 5'}">
+                            <th:block th:each="score : ${#numbers.sequence(1, 5)}"
+                                      th:text="${score <= review.rating ? '★' : '☆'}"></th:block>
+                        </span>
+                    </div>
+                    <p th:if="${review.comment != null and !#strings.isEmpty(review.comment)}"
+                       th:text="${review.comment}" class="mb-0 mt-2">Комментарий пользователя</p>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 

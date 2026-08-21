@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<body>
+<div th:fragment="reviewForm(productId, reviewAction, commentAction)" class="card border-0 shadow-sm mt-3">
+    <div class="card-body">
+        <h5 class="card-title">Оставить отзыв</h5>
+        <div th:if="${reviewError != null}" th:text="${reviewError}" class="alert alert-warning py-2">
+            Отзыв не сохранён.
+        </div>
+        <div th:if="${reviewSuccess != null}" th:text="${reviewSuccess}" class="alert alert-success py-2">
+            Отзыв сохранён.
+        </div>
+        <form th:action="${commentAction}" method="post" class="d-flex gap-2 mb-3">
+            <input type="hidden" name="productId" th:value="${productId}">
+            <input class="form-control" type="text" name="comment"
+                   placeholder="Оставить комментарий">
+            <button class="btn btn-primary" type="submit">Отправить</button>
+        </form>
+        <form th:action="${reviewAction}" method="post">
+            <input type="hidden" name="productId" th:value="${productId}">
+            <div class="d-flex flex-wrap align-items-center gap-3">
+                <div class="d-flex flex-row-reverse justify-content-end gap-1" aria-label="Оценка товара">
+                    <th:block th:each="score : ${#numbers.sequence(5, 1)}">
+                        <input class="btn-check" type="radio" name="rating"
+                               th:id="${'rating-' + productId + '-' + score}"
+                               th:value="${score}" required>
+                        <label class="btn btn-outline-warning"
+                               th:for="${'rating-' + productId + '-' + score}"
+                               th:title="${score + ' из 5'}">★</label>
+                    </th:block>
+                </div>
+                <button class="btn btn-primary" type="submit">Отправить</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
