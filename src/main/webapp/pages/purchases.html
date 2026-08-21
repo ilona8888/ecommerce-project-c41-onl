@@ -20,7 +20,14 @@
         <h2 class="mb-3">Покупки</h2>
 
         <!-- Тут будет список купленных товаров с формой комментария и оценки -->
-        <div class="w-100 bg-light p-3" style="min-height: 400px;"></div>
+        <div class="w-100 bg-light p-3" style="min-height: 400px;">
+            <div th:if="${purchases != null}" th:each="purchase : ${purchases}">
+                <div th:replace="~{fragments/review :: reviewForm(
+                        ${purchase.product.id},
+                        @{/reviews},
+                        @{/reviews/comment})}"></div>
+            </div>
+        </div>
     </div>
 </main>
 
