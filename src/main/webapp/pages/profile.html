@@ -21,7 +21,28 @@
 
         <!-- Тут будет подробная информация об учетной записи
              (для роли «Продавец» дополнительно раздел «О продавце») -->
-        <div class="w-100 bg-light p-3" style="min-height: 400px;"></div>
+        <div class="w-100 bg-light p-3" style="min-height: 400px;">
+            <div class="container text-left">
+                <div class="row">
+                    <div class="col">
+                        <form action="/sellerPage/2" METHOD="post">
+                            <input type="text" id="legalEntity" name="legalEntity" class="form-control" placeholder="Индивидуальный предприниматель или Юридическое лицо" aria-label="legalEntity" aria-describedby="visible-addon">
+                            <br>
+                            <input type="text" id="contactInfo" name="contactInfo" class="form-control" placeholder="Контактные данные" aria-label="contactInfo" aria-describedby="visible-addon">
+                            <br>
+                            <button type="submit" style="background-color: #33B5E5; border: none;">Изменить</button>
+                        </form>
+                    </div>
+                    <div class="col">
+                        <div style="background-color: indigo">
+                            <span style="color: white;" th:text="${sellerDetails}"></span>
+                            <br>
+                            <span style="color: white;" th:text="${sellerContactInfo}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 
