@@ -9,7 +9,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class Seller {
-    private Long id;
     private User user;
     private String details;
     private String contactInfo;
