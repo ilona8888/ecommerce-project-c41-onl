@@ -8,6 +8,10 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * DAO для работы с товарами.
@@ -54,5 +58,18 @@ public class ProductDao {
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка сохранения нового товара.", e);
         }
+    }
+    private final List<Product> productsList = new ArrayList<>();
+
+    public List<Product> searchProducts(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return Collections.emptyList();
+        }
+
+        String lowerKeyword = keyword.toLowerCase();
+        return productsList.stream()
+                .filter(product -> product.getName() != null &&
+                        product.getName().toLowerCase().contains(lowerKeyword))
+                .collect(Collectors.toList());
     }
 }
