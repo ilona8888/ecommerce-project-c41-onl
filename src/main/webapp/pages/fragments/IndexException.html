@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Каталог товаров</title>
+</head>
+<body>
+<form th:action="@{/index}" th:object="${}" method="post">
+     <input type = "text"  th:field="*{ProductName}"  placeholder = "ProductName">
+    <p th:if="${#fields.hasErrors('datePlanted')}" th:errors="*{ProductName}"></p>
+     <input type = "number"  th:field="*{price}" placeholder = "price">
+    <p th:if="${#fields.hasErrors('datePlanted')}" th:errors="*{price}"></p>
+     <input type = "text"  th:field="*{description}" placeholder = "description">
+    <p th:if="${#fields.hasErrors('datePlanted')}" th:errors="*{description}"></p>
+    <input type = "text"  th:field="*{SelectCategory}" placeholder = "SelectCategory">
+    <p th:if="${#fields.hasErrors('datePlanted')}" th:errors="*{SelectCategory}"></p>
+</form>
+</body>
+</html>
