@@ -38,7 +38,7 @@ public class ProductDao {
             preparedStatement.setString(1, product.getName());
             preparedStatement.setString(2, product.getDescription());
             preparedStatement.setBigDecimal(3, product.getPrice());
-            preparedStatement.setLong(4, seller.getId());
+            preparedStatement.setLong(4, seller.getUser().getId());
             preparedStatement.setLong(5, category.getId());
             preparedStatement.executeUpdate();
             try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
