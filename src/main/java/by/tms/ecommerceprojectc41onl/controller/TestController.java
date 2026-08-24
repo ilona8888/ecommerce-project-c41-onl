@@ -22,22 +22,10 @@ public class TestController {
         return "index";
     }
 
-    // Карточка товара подробнее
-    @GetMapping("/product")
-    public String productDetails() {
-        return "product-details";
-    }
-
     // Избранное
     @GetMapping("/favorites")
     public String favorites() {
         return "favorites";
-    }
-
-    // Покупки
-    @GetMapping("/purchases")
-    public String purchases() {
-        return "purchases";
     }
 
     // Профиль
