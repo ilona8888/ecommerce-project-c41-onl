@@ -35,5 +35,29 @@
 <div th:replace="~{fragments/footer :: siteFooter}"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- Форма поиска -->
+<form th:action="@{/search}" method="get">
+    <input type="text" name="keyword" th:value="${keyword}" placeholder="Найти товар" required/>
+    <button type="submit">Искать</button>
+</form>
+
+<hr>
+
+<!-- Сообщение, если совпадений нет -->
+<div th:if="${notFoundMessage != null}">
+    <p style="color: red;" th:text="${notFoundMessage}"></p>
+</div>
+
+<!-- Отображение списка товаров -->
+<div th:if="${products != null and !products.isEmpty()}">
+    <h2>Результаты поиска:</h2>
+    <div class="product-list">
+        <div th:each="product : ${products}" class="product-card" style="border: 1px solid #ccc; margin: 10px; padding: 10px;">
+            <h3 th:text="${product.name}">Название товара</h3>
+            <p th:text="'Цена: ' + ${product.price} + ' руб.'">Цена</p>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
