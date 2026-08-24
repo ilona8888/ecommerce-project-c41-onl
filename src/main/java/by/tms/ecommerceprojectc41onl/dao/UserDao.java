@@ -24,6 +24,8 @@ public class UserDao {
 
     private static final String SELECT_BY_USER_NAME_QUERY = "SELECT * FROM USERS WHERE USER_NAME = ?";
 
+    private static final String SELECT_BY_ID_QUERY = "SELECT * FROM USERS WHERE ID = ?";
+
     private final DataSource dataSource;
 
     /**
@@ -45,7 +47,7 @@ public class UserDao {
                 throw new RuntimeException("Не найден пользователь по имени пользователя %s".formatted(userName));
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Ошибка поиска продавца", e);
+            throw new RuntimeException("Ошибка поиска пользователя", e);
         }
     }
 
@@ -60,5 +62,21 @@ public class UserDao {
                 resultSet.getDate("BIRTHDAY").toLocalDate(),
                 UserRole.valueOf(resultSet.getString("ROLE"))
         );
+    }
+    public User getById(long id) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BY_ID_QUERY)) {
+
+            preparedStatement.setLong(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return mapToUser(resultSet);
+                }
+
+                throw new RuntimeException("Не найден пользователь по идентификатору пользователя %s".formatted(id));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка поиска пользователя", e);
+        }
     }
 }

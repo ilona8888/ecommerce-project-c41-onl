@@ -26,23 +26,25 @@ public class SellerDao {
 
     private final DataSource dataSource;
 
+    private final UserDao userDao;
+
     /**
      * Получение продавца по идентификатору.
      *
-     * @param id идентификатор продавца
+     * @param userId идентификатор продавца
      * @return продавец
      */
-    public Seller getById(long id) {
+    public Seller getByUserId(long userId) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BY_ID_QUERY)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BY_USER_ID_QUERY)) {
 
-            preparedStatement.setLong(1, id);
+            preparedStatement.setLong(1, userId);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     return mapToSeller(resultSet);
                 }
 
-                throw new RuntimeException("Не найден пользователь по id %s".formatted(id));
+                throw new RuntimeException("Не найден пользователь по userId %s".formatted(userId));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка поиска продавца", e);
@@ -51,7 +53,8 @@ public class SellerDao {
 
     private Seller mapToSeller(ResultSet resultSet) throws SQLException {
         var seller = new Seller();
-        seller.setId(resultSet.getLong("USERS_ID"));
+        long usersId = resultSet.getLong("USERS_ID");
+        seller.setUser(userDao.getById(usersId));
         seller.setContactInfo(resultSet.getString("CONTACT_INFO"));
         seller.setDetails(resultSet.getString("DETAILS"));
 
