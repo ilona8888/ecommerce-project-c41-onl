@@ -21,7 +21,33 @@
 
         <!-- Тут будет подробная информация об учетной записи
              (для роли «Продавец» дополнительно раздел «О продавце») -->
-        <div class="w-100 bg-light p-3" style="min-height: 400px;"></div>
+        <div class="w-100 bg-light p-3" style="min-height: 400px;">
+            <div class="container text-left">
+                <div class="row">
+                    <div class="col">
+                        <form th:action="@{/sellerPage/{id}(id=${sellerID})}" th:object="${newSellerPageDto}" method="post">
+                            <input type="text" th:field="*{legalEntity}" class="form-control" placeholder="Индивидуальный предприниматель или Юридическое лицо" aria-label="legalEntity" aria-describedby="visible-addon">
+                            <p th:if="${#fields.hasErrors('legalEntity')}" th:errors="*{legalEntity}"></p>
+                            <br>
+                            <input type="text" th:field="*{contactInfo}" class="form-control" placeholder="Контактные данные" aria-label="contactInfo" aria-describedby="visible-addon">
+                            <p th:if="${#fields.hasErrors('contactInfo')}" th:errors="*{contactInfo}"></p>
+                            <br>
+                            <button type="submit" class="btn btn-info">Изменить</button>
+                            <br>
+                            <p th:text="${updateError}"></p>
+                        </form>
+                    </div>
+                    <div class="col">
+                        <div style="background-color: indigo; height: 300px;">
+                            <span style="color: white; font-size: 36px; padding: 30px;" th:text="${sellerPageDto.getLegalEntity()}"></span>
+                            <br>
+                            <br>
+                            <span style="color: white; font-size: 24px; padding: 30px" th:text="'Телефон: ' + ${sellerPageDto.getContactInfo()}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 

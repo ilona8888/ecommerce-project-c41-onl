@@ -58,7 +58,7 @@ public class ProductService {
     private Seller getSeller(CreateProductDto createProductDto) {
         User user = userDao.getByName(createProductDto.userName());
 
-        return sellerDao.getById(user.getId());
+        return sellerDao.getByUserId(user.getId());
     }
 
     private File createFile(CreateProductDto createProductDto) {
