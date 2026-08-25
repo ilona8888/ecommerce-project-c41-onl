@@ -3,10 +3,12 @@ package by.tms.ecommerceprojectc41onl.controller;
 import by.tms.ecommerceprojectc41onl.dao.interfaces.TokenDao;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Временный контроллер для проверки каркаса приложения.
  */
+@RequestMapping
 @Controller
 public class TestController {
 
@@ -35,7 +37,7 @@ public class TestController {
     }
 
     // Покупки
-    @GetMapping("/purchases")
+    @GetMapping("/test/purchases")
     public String purchases() {
         return "purchases";
     }

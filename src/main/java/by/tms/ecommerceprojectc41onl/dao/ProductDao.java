@@ -72,4 +72,25 @@ public class ProductDao {
                         product.getName().toLowerCase().contains(lowerKeyword))
                 .collect(Collectors.toList());
     }
+    public Product findById(Long id) {
+        String sql = "SELECT * FROM products WHERE id = ?";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setLong(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    Product product = new Product();
+                    product.setId(resultSet.getLong("id"));
+                    product.setName(resultSet.getString("name"));
+                    product.setPrice(resultSet.getBigDecimal("price"));
+                    // Заполните остальные поля товара из БД
+                    return product;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка поиска товара по ID", e);
+        }
+        return null;
+    }
 }
