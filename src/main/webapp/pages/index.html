@@ -34,9 +34,37 @@
             <p style="color: blue;" th:if="${productCards == null}">productCards == null</p>
 
             <div class="row g-4">
-                <div th:each="productCard : ${productCards}"
+                <div th:each="product : ${productCards}"
                      class="col-6 col-md-4 col-lg-3">
-                    <div th:replace="~{fragments/product-сard:: productCard(productCard)}"></div>
+                    <div class="card" style="width: 18rem;" th:object="${product}">
+
+                        <div th:if="${product.photoId != null}">
+                            <img class="card-img-top" th:src="@{/files/${product.photoId}}" alt="">
+                        </div>
+                        <div th:if="${product.photoId == null}">
+                            <img class="card-img-top" th:src="" alt="">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title mb-3 text-center" th:text="${product.name}"></h5>
+                            <div class="d-flex justify-content-center mb-3">
+                                <ul class="list-group list-group-horizontal">
+                                    <li class="list-group-item border-0" th:text="${product.price}"></li>
+                                    <li class="list-group-item border-0">
+                                        <button class="btn btn-primary d-none" type="button">
+                                            <img th:src="${product.favourite} ? '/static/img/icons/heart-red.png' : '/static/img/icons/heart-love.png'"
+                                                 alt="">
+                                        </button>
+                                    </li>
+                                    <li class="list-group-item border-0" th:text="${product.score}"></li>
+                                </ul>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary"
+                                        style="background-color: var(--brand-blue)">Купить
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
