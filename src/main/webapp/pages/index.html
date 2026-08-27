@@ -36,14 +36,14 @@
             <div class="row g-4">
                 <div th:each="product : ${productCards}"
                      class="col-6 col-md-4 col-lg-3">
-                    <div class="card" style="width: 18rem;" th:object="${product}">
+                    <div class="card" style="width: 18rem;">
 
-                        <div th:if="${product.photoId != null}">
-                            <img class="card-img-top" th:src="@{/files/${product.photoId}}" alt="">
-                        </div>
-                        <div th:if="${product.photoId == null}">
-                            <img class="card-img-top" th:src="" alt="">
-                        </div>
+<!--                        <div th:if="${product.photoId != null}">-->
+<!--                            <img class="card-img-top" th:src="@{/files/${product.photoId}}" alt="">-->
+<!--                        </div>-->
+<!--                        <div th:if="${product.photoId == null}">-->
+<!--                            <img class="card-img-top" th:src="" alt="">-->
+<!--                        </div>-->
                         <div class="card-body">
                             <h5 class="card-title mb-3 text-center" th:text="${product.name}"></h5>
                             <div class="d-flex justify-content-center mb-3">
