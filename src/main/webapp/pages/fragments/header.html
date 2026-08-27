@@ -2,14 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<!-- Шапка приложения + выпадающее меню каталога + модальное окно авторизации -->
 <div th:fragment="siteHeader">
 
     <header class="app-header sticky-top">
         <nav class="navbar navbar-expand py-2">
             <div class="container-fluid d-flex align-items-center gap-3">
 
-                <!-- Логотип и название -->
+                <!-- Логотип -->
                 <a class="navbar-brand d-flex align-items-center gap-2 m-0" th:href="@{/}">
                     <img class="brand-logo" th:src="@{/static/img/icons/logo.png}" alt="Логотип">
                     <span class="d-none d-md-inline">OnlineShopping</span>
@@ -24,77 +23,119 @@
                     <img class="nav-icon" th:src="@{/static/img/icons/menu.png}" alt="Каталог">
                 </button>
 
-                <!-- Поиск по названию товара -->
-                <form class="search-form d-flex flex-grow-1" role="search" th:action="@{/}" method="get">
-                    <input class="form-control" type="search" name="query"
-                           placeholder="Найти товар" aria-label="Найти товар">
-                    <button class="btn" type="submit" aria-label="Найти">
+                <!-- Поиск -->
+                <form class="search-form d-flex flex-grow-1" role="search" th:action="@{/search}" method="get">
+                    <input class="form-control" type="search" name="keyword" th:value="${keyword}" placeholder="Найти товар">
+                    <button class="btn" type="submit">
                         <img class="search-icon" th:src="@{/static/img/icons/search.png}" alt="Найти">
                     </button>
                 </form>
 
-                <!-- Иконки навигации -->
+                <!-- Иконки -->
                 <div class="d-flex align-items-center gap-4">
 
-                    <a class="nav-icon-link text-center" th:href="@{/purchases}">
-                        <img class="nav-icon d-block mx-auto" th:src="@{/static/img/icons/order.png}" alt="Покупки">
-                        <span>Покупки</span>
-                    </a>
+                    <!-- Покупки (BUYER + SELLER) -->
+                    <th:block th:if="${user != null and (user.role.name() == 'BUYER' or user.role.name() == 'SELLER')}">
+                        <a class="nav-icon-link text-center" th:href="@{/purchases}">
 
-                    <a class="nav-icon-link text-center" th:href="@{/favorites}">
-                        <img class="nav-icon d-block mx-auto" th:src="@{/static/img/icons/favouritesIcon.png}"
-                             alt="Избранное">
-                        <span>Избранное</span>
-                    </a>
+                            <img class="nav-icon d-block mx-auto" th:src="@{/static/img/icons/order.png}" alt="Покупки">
+                            <span>Покупки</span>
+                        </a>
+                    </th:block>
 
-                    <!-- Профиль: выпадающее окно -->
+                    <!-- Избранное (BUYER + SELLER) -->
+                    <th:block th:if="${user != null and (user.role.name() == 'BUYER' or user.role.name() == 'SELLER')}">
+                        <a class="nav-icon-link text-center" th:href="@{/favorites}">
+                            <img class="nav-icon d-block mx-auto" th:src="@{/static/img/icons/favouritesIcon.png}" alt="Избранное">
+                            <span>Избранное</span>
+                        </a>
+                    </th:block>
+
+                    <!-- Стать продавцом (только для BUYER) -->
+                    <th:block th:if="${user != null and user.role.name() == 'BUYER'}">
+                        <a class="nav-icon-link text-center" th:href="@{/becomeSeller}">
+                            <img class="nav-icon d-block mx-auto" th:src="@{/static/img/icons/becomeSeller.png}" alt="Стать продавцом">
+                            <span>Стать продавцом</span>
+                        </a>
+                    </th:block>
+
+                    <!-- Профиль -->
                     <div class="dropdown">
                         <a class="nav-icon-link text-center d-block" href="#" role="button"
                            id="profileDropdown"
                            data-bs-toggle="dropdown"
-                           data-bs-auto-close="outside"
-                           aria-expanded="false">
+                           data-bs-auto-close="outside">
                             <img class="nav-icon d-block mx-auto" th:src="@{/static/img/icons/user.png}" alt="Профиль">
                             <span>Профиль</span>
                         </a>
 
-                        <div class="dropdown-menu dropdown-menu-end dropdown-profile p-3"
-                             aria-labelledby="profileDropdown">
+                        <div class="dropdown-menu dropdown-menu-end dropdown-profile p-3">
 
-                            <!-- Тут будут пункты меню профиля в зависимости от роли
-                                 (О продавце / Выйти / Удалить профиль) -->
-
-                            <div class="w-100">
-                                <a class="btn btn-link w-100 fs-5 text-decoration-none"
-                                   th:href="@{/login}">
+                            <!-- Гость -->
+                            <th:block th:if="${user == null}">
+                                <a class="btn btn-link w-100 fs-5 text-decoration-none" th:href="@{/login}">
                                     Войти
                                 </a>
-                            </div>
+                            </th:block>
+
+                            <!-- Покупатель -->
+                            <th:block th:if="${user != null and user.role.name() == 'BUYER'}">
+                                <a class="btn btn-link w-100 fs-5 text-decoration-none" th:href="@{/logout}">Выйти</a>
+                                <a class="btn btn-link w-100 fs-5 text-decoration-none text-danger border-top mt-2 pt-2"  th:href="@{/deleteAccount}">Удалить аккаунт</a>
+                            </th:block>
+
+                            <!-- Продавец -->
+                            <th:block th:if="${user != null and user.role.name() == 'SELLER'}">
+                                <a class="btn btn-link w-100 fs-5 text-decoration-none" th:href="@{/sellerPage/{id}(id=${user.id})}">
+                                    О продавце
+                                </a>
+                                <a class="btn btn-link w-100 fs-5 text-decoration-none" th:href="@{/logout}">Выйти</a>
+                                <a class="btn btn-link w-100 fs-5 text-decoration-none text-danger border-top mt-2 pt-2"  th:href="@{/deleteAccount}">Удалить аккаунт</a>
+                            </th:block>
+
+                            <!-- Админ -->
+                            <th:block th:if="${user != null and user.role.name() == 'ADMIN'}">
+                                <a class="btn btn-link w-100 fs-5 text-decoration-none" th:href="@{/logout}">Выйти</a>
+                            </th:block>
+
                         </div>
                     </div>
 
-                    <!-- Тут будет иконка создания карточки товара (только для роли «Продавец») -->
-                    <a class="nav-icon-link text-center" th:href="@{/new-card}">
-                        <img class="nav-icon d-block mx-auto" th:src="@{/static/img/icons/add.png}"
-                             alt="Карточка">
-                        <span>Карточка</span>
-                    </a>
-                    <div class="d-none"></div>
+                    <!-- Создание карточки (SELLER) -->
+                    <th:block th:if="${user != null and user.role.name() == 'SELLER'}">
+                        <a class="nav-icon-link text-center" th:href="@{/new-card}">
+                            <img class="nav-icon d-block mx-auto" th:src="@{/static/img/icons/add.png}" alt="Карточка">
+                            <span>Карточка</span>
+                        </a>
+                    </th:block>
+
+                    <!-- Создание категорий (Администратор) -->
+                    <th:block th:if="${user != null and user.role.name() == 'ADMIN'}">
+                        <a class="nav-icon-link text-center" th:href="@{/}">
+                            <img class="nav-icon d-block mx-auto" th:src="@{/static/img/icons/add.png}" alt="Категории">
+                            <span>Категории</span>
+                        </a>
+                    </th:block>
+
                 </div>
             </div>
         </nav>
     </header>
 
-    <!-- Выпадающее окно (Offcanvas): каталог товаров -->
-    <div class="offcanvas offcanvas-start offcanvas-catalog" tabindex="-1"
-         id="catalogOffcanvas" aria-labelledby="catalogOffcanvasLabel">
+    <!-- Каталог Offcanvas -->
+    <div class="offcanvas offcanvas-start offcanvas-catalog" tabindex="-1" id="catalogOffcanvas">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="catalogOffcanvasLabel">Каталог товаров</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
+            <h5 class="offcanvas-title">Каталог товаров</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
+
         <div class="offcanvas-body">
-            <!-- Тут будет список разделов каталога (компьютеры, телефоны, телевизоры, книги и т.п.) -->
-            <div class="placeholder-box w-100"></div>
+            <ul class="list-group">
+                <li class="list-group-item"
+                    th:each="cat : ${categories}"
+                    th:text="${cat.name}">
+                </li>
+            </ul>
         </div>
     </div>
 

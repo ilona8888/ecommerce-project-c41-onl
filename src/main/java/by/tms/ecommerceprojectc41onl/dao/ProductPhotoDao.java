@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.Optional;
 
 /**
  * DAO для фото товаров.
@@ -18,6 +19,8 @@ public class ProductPhotoDao {
 
     private static final String INSERT_QUERY =
             "INSERT INTO PRODUCT_PHOTOS (FILE_ID, PRODUCTS_ID) VALUES (?, ?)";
+
+    private static final String FIND_PHOTO_ID_BY_PRODUCT_ID = "SELECT FILE_ID FROM PRODUCT_PHOTOS WHERE PRODUCTS_ID = ?";
 
     /**
      * Создание фото товара.
@@ -43,5 +46,24 @@ public class ProductPhotoDao {
         } catch (SQLException error) {
             throw new RuntimeException("Ошибка сохранения фото товара", error);
         }
+    }
+
+    public Optional<Long> getPhotoIdByProductId(long productId) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(FIND_PHOTO_ID_BY_PRODUCT_ID)) {
+
+            ps.setLong(1, productId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(rs.getLong("FILE_ID"));
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return Optional.empty();
     }
 }

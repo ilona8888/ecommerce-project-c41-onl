@@ -5,7 +5,8 @@ import by.tms.ecommerceprojectc41onl.dao.ReviewDao;
 import by.tms.ecommerceprojectc41onl.model.Product;
 import by.tms.ecommerceprojectc41onl.model.Review;
 import by.tms.ecommerceprojectc41onl.model.User;
-import by.tms.ecommerceprojectc41onl.services.ReviewCurrentUserProvider;
+import by.tms.ecommerceprojectc41onl.services.SessionService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,19 +24,20 @@ public class ReviewController {
 
     private final ReviewDao reviewDao;
     private final PurchaseDao purchaseDao;
-    private final ReviewCurrentUserProvider currentUserProvider;
+    private final SessionService sessionService;
 
     public ReviewController(ReviewDao reviewDao,
                             PurchaseDao purchaseDao,
-                            ReviewCurrentUserProvider currentUserProvider) {
+                            SessionService sessionService) {
         this.reviewDao = reviewDao;
         this.purchaseDao = purchaseDao;
-        this.currentUserProvider = currentUserProvider;
+        this.sessionService = sessionService;
     }
 
     @GetMapping("/purchases")
-    public String purchases(Model model) {
-        User user = currentUserProvider.getCurrentUser();
+    public String purchases(Model model, HttpSession session) {
+        //User user = currentUserProvider.getCurrentUser();
+        User user = sessionService.getCurrentUser(session);
         model.addAttribute("purchases",
                 user == null ? List.of() : purchaseDao.findByUser(user));
         return "purchases";
@@ -53,13 +55,15 @@ public class ReviewController {
     public String addReview(@Valid @ModelAttribute("review") Review review,
                             BindingResult bindingResult,
                             @RequestParam("productId") Long productId,
-                            RedirectAttributes redirectAttributes) {
+                            RedirectAttributes redirectAttributes,
+                            HttpSession session) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("reviewError", "Выберите оценку от 1 до 5.");
             return "redirect:/purchases";
         }
 
-        User user = currentUserProvider.getCurrentUser();
+        //User user = currentUserProvider.getCurrentUser();
+        User user = sessionService.getCurrentUser(session);
         Product product = findPurchasedProduct(user, productId);
         if (user == null || product == null) {
             redirectAttributes.addFlashAttribute("reviewError", "Купленный товар не найден.");
@@ -76,13 +80,14 @@ public class ReviewController {
     @PostMapping("/reviews/comment")
     public String addComment(@RequestParam("productId") Long productId,
                              @RequestParam("comment") String comment,
-                             RedirectAttributes redirectAttributes) {
+                             RedirectAttributes redirectAttributes,
+                             HttpSession session) {
         if (comment.isBlank()) {
             redirectAttributes.addFlashAttribute("reviewError", "Введите комментарий.");
             return "redirect:/purchases";
         }
 
-        User user = currentUserProvider.getCurrentUser();
+        User user = sessionService.getCurrentUser(session);
         Product product = findPurchasedProduct(user, productId);
         if (user == null || product == null) {
             redirectAttributes.addFlashAttribute("reviewError", "Купленный товар не найден.");

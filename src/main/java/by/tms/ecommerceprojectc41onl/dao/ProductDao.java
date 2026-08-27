@@ -25,13 +25,15 @@ public class ProductDao {
 
     private static final String INSERT_QUERY = "INSERT INTO PRODUCTS (NAME, DESCRIPTION, PRICE, SELLERS_ID, CATEGORIES_ID) VALUES (?, ?, ?, ?, ?)";
 
+    private static final String FIND_ALL_QUERY = "SELECT * FROM PRODUCTS";
+
     private final DataSource dataSource;
 
     /**
      * Создание нового товара.
      *
-     * @param product Продукт
-     * @param seller Продавец
+     * @param product  Продукт
+     * @param seller   Продавец
      * @param category Категория товара
      * @return Продукт (с заполненным идентификатором).
      */
@@ -59,8 +61,10 @@ public class ProductDao {
             throw new RuntimeException("Ошибка сохранения нового товара.", e);
         }
     }
+
     private final List<Product> productsList = new ArrayList<>();
 
+    // TODO : Данный метод должен брать список товаров из БД(так как коллекция productsList(строчка 65) всегда пустая)
     public List<Product> searchProducts(String keyword) {
         if (keyword == null || keyword.isBlank()) {
             return Collections.emptyList();
@@ -72,4 +76,31 @@ public class ProductDao {
                         product.getName().toLowerCase().contains(lowerKeyword))
                 .collect(Collectors.toList());
     }
+
+    public List<Product> getAll() {
+
+        List<Product> products = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_QUERY);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            {
+
+                while (resultSet.next()) {
+                    Product product = new Product();
+                    product.setId(resultSet.getLong("id"));
+                    product.setName(resultSet.getString("name"));
+                    product.setPrice(resultSet.getBigDecimal("price"));
+                    product.setDescription(resultSet.getString("description"));
+
+                    products.add(product);
+                }
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return products;
+    }
 }
+

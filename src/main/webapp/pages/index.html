@@ -27,7 +27,36 @@
         </button>
 
         <!-- Тут будет сетка с карточками товаров -->
-        <div class="w-100 bg-light p-3" style="min-height: 400px;"></div>
+        <div class="w-100 bg-light p-3" style="min-height: 400px;">
+<!--            Отладка-->
+            <p style="color: red;">Debug</p>
+            <p style="color: red;">Размер списка: <b th:text="${#lists.size(productCards)}"></b></p>
+            <p style="color: blue;" th:if="${productCards == null}">productCards == null</p>
+
+            <div class="row g-4">
+                <div th:each="productCard : ${productCards}"
+                     class="col-6 col-md-4 col-lg-3">
+                    <div th:replace="~{fragments/product-сard:: productCard(productCard)}"></div>
+                </div>
+            </div>
+        </div>
+
+
+<!--        &lt;!&ndash; Сообщение, если совпадений нет &ndash;&gt;-->
+<!--        <div th:if="${notFoundMessage != null}">-->
+<!--            <p style="color: red;" th:text="${notFoundMessage}"></p>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Отображение списка товаров &ndash;&gt;-->
+<!--        <div th:if="${products != null and !products.isEmpty()}">-->
+<!--            <h2>Результаты поиска:</h2>-->
+<!--            <div class="product-list">-->
+<!--                <div th:each="product : ${products}" class="product-card" style="border: 1px solid #ccc; margin: 10px; padding: 10px;">-->
+<!--                    <h3 th:text="${product.name}">Название товара</h3>-->
+<!--                    <p th:text="'Цена: ' + ${product.price} + ' руб.'">Цена</p>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
     </div>
 </main>
 
@@ -35,29 +64,12 @@
 <div th:replace="~{fragments/footer :: siteFooter}"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Форма поиска -->
-<form th:action="@{/search}" method="get">
-    <input type="text" name="keyword" th:value="${keyword}" placeholder="Найти товар" required/>
-    <button type="submit">Искать</button>
-</form>
+<!--&lt;!&ndash; Форма поиска &ndash;&gt;-->
+<!--<form th:action="@{/search}" method="get">-->
+<!--    <input type="text" name="keyword" th:value="${keyword}" placeholder="Найти товар" required/>-->
+<!--    <button type="submit">Искать</button>-->
+<!--</form>-->
 
-<hr>
-
-<!-- Сообщение, если совпадений нет -->
-<div th:if="${notFoundMessage != null}">
-    <p style="color: red;" th:text="${notFoundMessage}"></p>
-</div>
-
-<!-- Отображение списка товаров -->
-<div th:if="${products != null and !products.isEmpty()}">
-    <h2>Результаты поиска:</h2>
-    <div class="product-list">
-        <div th:each="product : ${products}" class="product-card" style="border: 1px solid #ccc; margin: 10px; padding: 10px;">
-            <h3 th:text="${product.name}">Название товара</h3>
-            <p th:text="'Цена: ' + ${product.price} + ' руб.'">Цена</p>
-        </div>
-    </div>
-</div>
 
 </body>
 </html>

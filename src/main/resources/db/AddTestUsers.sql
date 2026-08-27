@@ -1,5 +1,9 @@
+/*TODO : доработать SQL-скрипт – добавить админа*/
+/* Включаем pgcrypto */
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 /*Добавить покупателя*/
-INSERT INTO USERS (USER_NAME,
+    INSERT INTO USERS (USER_NAME,
                    EMAIL,
                    PASSWORD_HASH,
                    STATUS,
@@ -7,8 +11,8 @@ INSERT INTO USERS (USER_NAME,
                    LAST_NAME,
                    BIRTHDAY,
                    ROLE)
-VALUES ('buyer',
-        'buyer@gmail.com',
+VALUES ('buyer1',
+        'buyer@gmail.com1',
         1234,
         true,
         'Elon',
@@ -45,3 +49,23 @@ SELECT id,
        'Торгует в Химках',
        123456789
 FROM inserted_user;
+/*Добавить админа в таблицу*/
+INSERT INTO USERS (
+    USER_NAME,
+    EMAIL,
+    PASSWORD_HASH,
+    STATUS,
+    FIRST_NAME,
+    LAST_NAME,
+    BIRTHDAY,
+    ROLE
+) VALUES (
+             'admin',
+             'admin@gmail.com',
+             '1234',
+             TRUE,
+             'System',
+             'Admin',
+             DATE '1990-01-01',
+             'admin'
+         )
