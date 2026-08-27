@@ -2,10 +2,7 @@ package by.tms.ecommerceprojectc41onl.controller;
 
 
 import by.tms.ecommerceprojectc41onl.dto.ProductCardDto;
-import by.tms.ecommerceprojectc41onl.services.CategoryService;
 import by.tms.ecommerceprojectc41onl.services.ProductService;
-import by.tms.ecommerceprojectc41onl.services.SessionService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,8 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-
-//TODO : ПРОБЛЕМА : невозможно отобразить карточки товара на главной странице
 @Controller
 @RequiredArgsConstructor
 public class CatalogController {

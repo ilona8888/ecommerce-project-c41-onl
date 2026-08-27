@@ -36,7 +36,6 @@ public class ReviewController {
 
     @GetMapping("/purchases")
     public String purchases(Model model, HttpSession session) {
-        //User user = currentUserProvider.getCurrentUser();
         User user = sessionService.getCurrentUser(session);
         model.addAttribute("purchases",
                 user == null ? List.of() : purchaseDao.findByUser(user));
@@ -62,7 +61,6 @@ public class ReviewController {
             return "redirect:/purchases";
         }
 
-        //User user = currentUserProvider.getCurrentUser();
         User user = sessionService.getCurrentUser(session);
         Product product = findPurchasedProduct(user, productId);
         if (user == null || product == null) {

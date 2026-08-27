@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
- // TODO : purchaseService не может зарегистрироваться как бин
 @Controller
 public class PurchaseController {
 
@@ -34,7 +33,7 @@ public class PurchaseController {
         return "redirect:/purchases";
     }
 
-    // TODO : такой метод находится ReviewController(строчка 47), надо доработать, чтобы также выводилась карточка товара(можно сюда перенести метод и доработать)
+    // TODO : такой метод находится ReviewController(строчка 37), надо доработать, чтобы также выводилась форма оценки товара/написания комментария(опционально – перенести сюда метод и доработать)
 //    @GetMapping("/purchases")
 //    public String showPurchases(Model model, HttpSession session) {
 //

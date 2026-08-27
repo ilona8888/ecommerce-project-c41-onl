@@ -28,11 +28,6 @@
 
         <!-- Тут будет сетка с карточками товаров -->
         <div class="w-100 bg-light p-3" style="min-height: 400px;">
-<!--            Отладка-->
-            <p style="color: red;">Debug</p>
-            <p style="color: red;">Размер списка: <b th:text="${#lists.size(productCards)}"></b></p>
-            <p style="color: blue;" th:if="${productCards == null}">productCards == null</p>
-
             <div class="row g-4">
                 <div th:each="product : ${productCards}"
                      class="col-6 col-md-4 col-lg-3">
