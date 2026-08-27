@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
 /**
  * DAO для работы с пользователями.
@@ -25,6 +26,8 @@ public class UserDao {
     private static final String SELECT_BY_USER_NAME_QUERY = "SELECT * FROM USERS WHERE USER_NAME = ?";
 
     private static final String SELECT_BY_ID_QUERY = "SELECT * FROM USERS WHERE ID = ?";
+
+    private static final String FIND_BY_EMAIL_QUERY = "SELECT * FROM USERS WHERE EMAIL=?;";
 
     private final DataSource dataSource;
 
@@ -57,26 +60,42 @@ public class UserDao {
                 resultSet.getString("USER_NAME"),
                 resultSet.getString("EMAIL"),
                 resultSet.getString("PASSWORD_HASH"),
+                resultSet.getBoolean("STATUS"),
                 resultSet.getString("FIRST_NAME"),
                 resultSet.getString("LAST_NAME"),
                 resultSet.getDate("BIRTHDAY").toLocalDate(),
-                UserRole.valueOf(resultSet.getString("ROLE"))
+                UserRole.valueOf(resultSet.getString("ROLE").trim().toUpperCase())
         );
     }
-    public User getById(long id) {
+    public Optional<User> getById(long id) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BY_ID_QUERY)) {
 
             preparedStatement.setLong(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    return mapToUser(resultSet);
+                    return Optional.of(mapToUser(resultSet));
                 }
-
-                throw new RuntimeException("Не найден пользователь по идентификатору пользователя %s".formatted(id));
+                return Optional.empty();
             }
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка поиска пользователя", e);
+        }
+    }
+
+    public Optional<User> findByEmail(String email) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_EMAIL_QUERY)) {
+
+            preparedStatement.setString(1, email);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(mapToUser(resultSet));
+                }
+                return Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка при поиске пользователя по email: " + email, e);
         }
     }
 }

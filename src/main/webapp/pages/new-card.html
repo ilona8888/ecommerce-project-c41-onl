@@ -20,6 +20,11 @@
     document.addEventListener('DOMContentLoaded', function () {
         const myModal = new bootstrap.Modal(document.getElementById('CardModal'));
         myModal.show();
+
+        // После закрытие модального возвращаемся на каталог
+        document.getElementById('CardModal').addEventListener('hidden.bs.modal', function () {
+            window.location.href = "/";
+        });
     });
 </script>
 <body>

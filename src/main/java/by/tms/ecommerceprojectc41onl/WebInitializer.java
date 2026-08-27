@@ -1,6 +1,8 @@
 package by.tms.ecommerceprojectc41onl;
 
 import by.tms.ecommerceprojectc41onl.config.WebConfiguration;
+import by.tms.ecommerceprojectc41onl.filter.AuthFilter;
+import jakarta.servlet.Filter;
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletRegistration;
 import org.jspecify.annotations.Nullable;
@@ -28,7 +30,12 @@ public class WebInitializer extends AbstractAnnotationConfigDispatcherServletIni
         // Optionally also set maxFileSize, maxRequestSize, fileSizeThreshold
         registration.setMultipartConfig(new MultipartConfigElement(""));
         registration.setInitParameter("throwExceptionIfNoHandlerFound", "true");
-
     }
 
+    @Override
+    protected Filter[] getServletFilters() {
+        return new Filter[]{
+                new org.springframework.web.filter.DelegatingFilterProxy("authFilter")
+        };
+    }
 }

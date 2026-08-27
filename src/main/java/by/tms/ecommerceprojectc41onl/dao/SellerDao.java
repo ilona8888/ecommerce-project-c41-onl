@@ -17,7 +17,7 @@ import java.sql.*;
 @RequiredArgsConstructor
 public class SellerDao {
 
-    private static final String SELECT_BY_ID_QUERY = "SELECT * FROM SELLERS WHERE users_id = ?";
+    private static final String SELECT_BY_USER_ID_QUERY = "SELECT * FROM SELLERS WHERE users_id = ?";
     private static final String SELECT_DETAILS_BY_ID_QUERY = "SELECT details FROM SELLERS WHERE users_id = ?";
     private static final String SELECT_CONTACT_INFO_BY_ID_QUERY = "SELECT contact_info FROM SELLERS WHERE users_id = ?";
 
@@ -54,7 +54,7 @@ public class SellerDao {
     private Seller mapToSeller(ResultSet resultSet) throws SQLException {
         var seller = new Seller();
         long usersId = resultSet.getLong("USERS_ID");
-        seller.setUser(userDao.getById(usersId));
+        seller.setUser(userDao.getById(usersId).get());
         seller.setContactInfo(resultSet.getString("CONTACT_INFO"));
         seller.setDetails(resultSet.getString("DETAILS"));
 

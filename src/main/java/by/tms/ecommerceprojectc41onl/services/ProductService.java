@@ -2,11 +2,15 @@ package by.tms.ecommerceprojectc41onl.services;
 
 import by.tms.ecommerceprojectc41onl.dao.*;
 import by.tms.ecommerceprojectc41onl.dto.CreateProductDto;
+import by.tms.ecommerceprojectc41onl.dto.ProductCardDto;
 import by.tms.ecommerceprojectc41onl.model.*;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Сервис для работы с товарами.
@@ -69,4 +73,27 @@ public class ProductService {
         return fileDao.create(file);
     }
 
+    // TODO : Реализовать
+    public List<ProductCardDto> getAllProductCards() {
+
+        return productDao.getAll()
+                .stream()
+                .map(product -> {
+
+                    Long photoId = productPhotoDao
+                            .getPhotoIdByProductId(product.getId())
+                            .orElse(null);
+
+                    return new ProductCardDto(
+                            product.getId(),
+                            product.getName(),
+                            product.getPrice(),
+                            product.getDescription(),
+                            photoId,
+                            0.0,      // score — пока нет рейтинга
+                            false     // favourite — пока нет избранного
+                    );
+                })
+                .toList();
+    }
 }
