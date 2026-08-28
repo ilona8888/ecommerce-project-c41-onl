@@ -87,4 +87,21 @@ public class PurchaseDao {
         product.setDescription(resultSet.getString("DESCRIPTION"));
         return product;
     }
+
+    public void save(Purchase purchase) {
+        String sql = "INSERT INTO purchases (users_id, products_id, cost, purchase_date) VALUES (?, ?, ?, ?)";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setLong(1, purchase.getUser().getId());
+            statement.setLong(2, purchase.getProduct().getId());
+            statement.setBigDecimal(3, purchase.getCost());
+            // Конвертируем LocalDateTime в Timestamp для базы данных
+            statement.setTimestamp(4, java.sql.Timestamp.valueOf(purchase.getPurchaseDate()));
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка сохранения покупки", e);
+        }
+    }
 }

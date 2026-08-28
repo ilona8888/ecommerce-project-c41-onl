@@ -5,7 +5,13 @@ import by.tms.ecommerceprojectc41onl.model.User;
 
 import java.util.List;
 
-public interface PurchaseDao extends GenericDao<Purchase, Long> {
+public interface PurchaseDao {
+
     void save(Purchase purchase);
+
+    List<Purchase> findAll();
+
+    Purchase findById(Long id);
+
     List<Purchase> findByUser(User user);
 }

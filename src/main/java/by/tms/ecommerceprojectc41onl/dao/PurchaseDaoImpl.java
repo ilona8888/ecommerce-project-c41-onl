@@ -5,7 +5,6 @@ import by.tms.ecommerceprojectc41onl.model.Purchase;
 import by.tms.ecommerceprojectc41onl.model.User;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 @Repository
