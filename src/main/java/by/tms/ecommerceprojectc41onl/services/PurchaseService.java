@@ -16,24 +16,26 @@ public class PurchaseService {
     private final PurchaseDao purchaseDao;
     private final ProductDao productDao;
 
+
     public PurchaseService(PurchaseDao purchaseDao, ProductDao productDao) {
         this.purchaseDao = purchaseDao;
         this.productDao = productDao;
     }
 
     public void buyProduct(Long productId, User user) {
-        Product product = productDao.findById(productId);
+       // Product product = productDao.findById(productId); TODO : Реализовать метод в классе ProductDao
 
-        if (product == null) {
-            throw new IllegalArgumentException("Товар с ID " + productId + " не найден");
-        }
+        // TODO : Раскомментировать когда будет product (строчка 28)
+//        if (product == null) {
+//            throw new IllegalArgumentException("Товар с ID " + productId + " не найден");
+//        }
+//
+//        Purchase purchase = new Purchase();
+//        purchase.setUser(user);
+//        purchase.setProduct(product);
+//        purchase.setPurchaseDate(LocalDateTime.now());
 
-        Purchase purchase = new Purchase();
-        purchase.setUser(user);
-        purchase.setProduct(product);
-        purchase.setPurchaseDate(LocalDateTime.now());
-
-        purchaseDao.save(purchase);
+        // purchaseDao.save(purchase); TODO : Реализовать метод в классе ProductDao PurchaseDao
     }
 
     public List<Purchase> getCurrentUserPurchases(User user) {

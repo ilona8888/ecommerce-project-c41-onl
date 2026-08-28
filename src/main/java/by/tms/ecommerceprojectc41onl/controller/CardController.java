@@ -3,12 +3,13 @@ package by.tms.ecommerceprojectc41onl.controller;
 import by.tms.ecommerceprojectc41onl.dto.CreateProductDto;
 import by.tms.ecommerceprojectc41onl.dto.CreateProductRequestDto;
 import by.tms.ecommerceprojectc41onl.dto.FileData;
+import by.tms.ecommerceprojectc41onl.model.User;
 import by.tms.ecommerceprojectc41onl.services.CategoryService;
 import by.tms.ecommerceprojectc41onl.services.ProductService;
+import by.tms.ecommerceprojectc41onl.services.SessionService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +33,8 @@ public class CardController {
 
     private final ProductService productService;
 
+    private final SessionService sessionService;
+
     /**
      * Создание новой карточки товара.
      *
@@ -41,7 +44,6 @@ public class CardController {
     @GetMapping("/new-card")
     public String newCard(Model model) {
         model.addAttribute("createProductRequestDto", new CreateProductRequestDto());
-        model.addAttribute("categories", categoryService.findAllCategories());
 
         return "new-card";
     }
@@ -50,15 +52,16 @@ public class CardController {
      * Создание нового товара.
      *
      * @param createProductRequestDto данные запроса для создания нового товара
-     * @param userDetails информация о текущем авторизованном пользователе
+     * @param session информация о текущем сессии
      * @return редирект на главную страницу
      * @throws IOException исключение при чтении данных файлов
      */
     @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String create(
             @ModelAttribute("createProductRequestDto") CreateProductRequestDto createProductRequestDto,
-            @AuthenticationPrincipal UserDetails userDetails
-    ) throws IOException {
+            HttpSession session) throws IOException {
+
+        User user = sessionService.getCurrentUser(session);
 
         MultipartFile multipartFile = createProductRequestDto.getFile();
 
@@ -73,7 +76,7 @@ public class CardController {
                 createProductRequestDto.getCategoryId(),
                 createProductRequestDto.getPrice(),
                 fileData,
-                userDetails.getUsername()
+                user.getUserName()
         );
 
         productService.create(createProductDto);

@@ -1,5 +1,6 @@
 package by.tms.ecommerceprojectc41onl.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -38,6 +39,18 @@ public class User {
         this.userName = userName;
         this.email = email;
         this.passwordHash = passwordHash;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthday = birthday;
+        this.role = role;
+    }
+
+    public User(Long id, String userName, String email, String passwordHash, boolean status, String firstName, String lastName, LocalDate birthday, UserRole role) {
+        this.id = id;
+        this.userName = userName;
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.status = status;
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthday = birthday;
