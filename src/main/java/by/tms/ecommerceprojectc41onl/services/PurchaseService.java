@@ -1,7 +1,7 @@
 package by.tms.ecommerceprojectc41onl.services;
 
 import by.tms.ecommerceprojectc41onl.dao.ProductDao;
-import by.tms.ecommerceprojectc41onl.dao.interfaces.PurchaseDao;
+import by.tms.ecommerceprojectc41onl.dao.PurchaseDao;
 import by.tms.ecommerceprojectc41onl.model.Product;
 import by.tms.ecommerceprojectc41onl.model.Purchase;
 import by.tms.ecommerceprojectc41onl.model.User;
