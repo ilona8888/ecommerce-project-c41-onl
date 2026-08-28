@@ -25,11 +25,15 @@
                     </li>
                     <li class="list-group-item border-0" th:text="${product.score}"></li>
                 </ul>
-            </div>
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary"
-                        style="background-color: var(--brand-blue)">Купить
-                </button>
+                <div class="text-center">
+                    <form th:action="@{/buy/{id}(id=${product.id})}" method="POST">
+
+                        <button type="submit" class="btn btn-primary"
+                                style="background-color: var(--brand-blue)">Купить
+                        </button>
+
+                    </form>
+                </div>
             </div>
         </div>
     </div>

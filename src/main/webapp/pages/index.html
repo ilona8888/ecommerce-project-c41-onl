@@ -37,21 +37,21 @@
         </div>
 
 
-<!--        &lt;!&ndash; Сообщение, если совпадений нет &ndash;&gt;-->
-<!--        <div th:if="${notFoundMessage != null}">-->
-<!--            <p style="color: red;" th:text="${notFoundMessage}"></p>-->
-<!--        </div>-->
+        <!-- Сообщение, если совпадений нет -->
+        <div th:if="${notFoundMessage != null}">
+            <p style="color: red;" th:text="${notFoundMessage}"></p>
+        </div>
 
-<!--        &lt;!&ndash; Отображение списка товаров &ndash;&gt;-->
-<!--        <div th:if="${products != null and !products.isEmpty()}">-->
-<!--            <h2>Результаты поиска:</h2>-->
-<!--            <div class="product-list">-->
-<!--                <div th:each="product : ${products}" class="product-card" style="border: 1px solid #ccc; margin: 10px; padding: 10px;">-->
-<!--                    <h3 th:text="${product.name}">Название товара</h3>-->
-<!--                    <p th:text="'Цена: ' + ${product.price} + ' руб.'">Цена</p>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
+        <!-- Отображение списка товаров -->
+        <div th:if="${products != null and !products.isEmpty()}">
+            <h2>Результаты поиска:</h2>
+            <div class="product-list">
+                <div th:each="product : ${products}" class="product-card" style="border: 1px solid #ccc; margin: 10px; padding: 10px;">
+                    <h3 th:text="${product.name}">Название товара</h3>
+                    <p th:text="'Цена: ' + ${product.price} + ' руб.'">Цена</p>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 

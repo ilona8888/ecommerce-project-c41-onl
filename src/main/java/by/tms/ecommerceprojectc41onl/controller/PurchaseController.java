@@ -29,7 +29,7 @@ public class PurchaseController {
 
     //
     @PostMapping("/buy/{id}")
-    public String buyProduct(@PathVariable("id") Long productId, HttpSession session) {
+    public String buyProduct(@PathVariable("id") Long productId, HttpSession session, Model model) {
         User currentUser = sessionService.getCurrentUser(session);
 
         if (currentUser == null) {

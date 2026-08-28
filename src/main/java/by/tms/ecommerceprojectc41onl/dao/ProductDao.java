@@ -113,7 +113,8 @@ public class ProductDao {
                     product.setId(resultSet.getLong("id"));
                     product.setName(resultSet.getString("name"));
                     product.setPrice(resultSet.getBigDecimal("price"));
-                    // Заполните остальные поля товара из БД
+                    product.setDescription(resultSet.getString("description"));
+
                     return product;
                 }
             }
