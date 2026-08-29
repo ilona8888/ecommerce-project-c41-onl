@@ -31,7 +31,7 @@ public class CatalogController {
 
         // Если категории выбраны - фильтруем, иначе отдаем все
         if (categoryIds != null && !categoryIds.isEmpty()) {
-            cards = productService.getProductsByCategories(categoryIds); // Нужно добавить в ProductService
+            cards = productService.getProductsByCategories(categoryIds);
         } else {
             cards = productService.getAllProductCards();
         }

@@ -74,7 +74,6 @@ public class ProductService {
     }
 
     // TODO : Реализовать
-    // Наш новый метод для фильтрации
     public List<ProductCardDto> getProductsByCategories(List<Long> categoryIds) {
         return productDao.getByCategories(categoryIds)
                 .stream()
