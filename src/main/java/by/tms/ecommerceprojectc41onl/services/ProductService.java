@@ -74,26 +74,36 @@ public class ProductService {
     }
 
     // TODO : Реализовать
-    public List<ProductCardDto> getAllProductCards() {
+    // Наш новый метод для фильтрации
+    public List<ProductCardDto> getProductsByCategories(List<Long> categoryIds) {
+        return productDao.getByCategories(categoryIds)
+                .stream()
+                .map(this::mapToProductCardDto)
+                .toList();
+    }
 
+    // TODO : Реализовать
+    public List<ProductCardDto> getAllProductCards() {
         return productDao.getAll()
                 .stream()
-                .map(product -> {
-
-                    Long photoId = productPhotoDao
-                            .getPhotoIdByProductId(product.getId())
-                            .orElse(null);
-
-                    return new ProductCardDto(
-                            product.getId(),
-                            product.getName(),
-                            product.getPrice(),
-                            product.getDescription(),
-                            photoId,
-                            0.0,      // score — пока нет рейтинга
-                            false     // favourite — пока нет избранного
-                    );
-                })
+                .map(this::mapToProductCardDto)
                 .toList();
+    }
+
+    // Общий приватный метод для преобразования Product в ProductCardDto
+    private ProductCardDto mapToProductCardDto(Product product) {
+        Long photoId = productPhotoDao
+                .getPhotoIdByProductId(product.getId())
+                .orElse(null);
+
+        return new ProductCardDto(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getDescription(),
+                photoId,
+                0.0,      // score — пока нет рейтинга
+                false     // favourite — пока нет избранного
+        );
     }
 }
