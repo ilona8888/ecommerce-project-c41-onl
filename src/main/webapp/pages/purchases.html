@@ -59,24 +59,34 @@
 
                             <!-- Компактная форма отзыва -->
                             <div class="mt-auto border-top pt-3">
-                                <span class="d-block mb-2 text-muted small">Оставить отзыв</span>
-                                <form th:action="@{/review/add}" method="post" class="d-flex flex-column">
+
+                                <!-- 1. Форма для выставления оценки (звёзды) -->
+                                <form th:action="@{/reviews}" method="POST" class="mb-2">
                                     <input type="hidden" name="productId" th:value="${purchase.product.id}" />
-                                    <input type="text" name="comment" class="form-control mb-2 form-control-sm" placeholder="Оставить комментарий" required>
+
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <span class="text-muted small">Оцените товар:</span>
+                                        <div class="text-warning">
+                                            <!-- Теперь это кнопки type="submit". Клик по звезде = отправка оценки -->
+                                            <button type="submit" name="score" value="1" class="btn btn-sm btn-outline-warning p-1">★</button>
+                                            <button type="submit" name="score" value="2" class="btn btn-sm btn-outline-warning p-1">★</button>
+                                            <button type="submit" name="score" value="3" class="btn btn-sm btn-outline-warning p-1">★</button>
+                                            <button type="submit" name="score" value="4" class="btn btn-sm btn-outline-warning p-1">★</button>
+                                            <button type="submit" name="score" value="5" class="btn btn-sm btn-outline-warning p-1">★</button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <!-- 2. Форма для текста комментария -->
+                                <form th:action="@{/reviews/comment}" method="POST">
+                                    <input type="hidden" name="productId" th:value="${purchase.product.id}" />
 
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <div class="text-warning">
-                                            <button type="button" class="btn btn-sm btn-outline-warning p-1">★</button>
-                                            <button type="button" class="btn btn-sm btn-outline-warning p-1">★</button>
-                                            <button type="button" class="btn btn-sm btn-outline-warning p-1">★</button>
-                                            <button type="button" class="btn btn-sm btn-outline-warning p-1">★</button>
-                                            <button type="button" class="btn btn-sm btn-outline-warning p-1">★</button>
-                                        </div>
+                                        <input type="text" name="comment" class="form-control me-2 form-control-sm" placeholder="Написать комментарий..." required>
                                         <button type="submit" class="btn btn-primary btn-sm">Отправить</button>
                                     </div>
                                 </form>
                             </div>
-
                         </div>
                     </div>
                 </div>
