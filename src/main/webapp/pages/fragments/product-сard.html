@@ -1,37 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="productCard(productCard)">
-    <!--/*@thymesVar id="productCard" type="by.tms.ecommerceprojectc41onl.dto.ProductCardDto"*/-->
+<!-- Задаем параметр item -->
+<div th:fragment="productCard(item)">
     <div class="card" style="width: 18rem;">
 
-        <div th:if="${product.photoId != null}">
-            <img class="card-img-top" th:src="@{/files/${product.photoId}}" alt="">
+        <!-- Фотография с ограничением высоты -->
+        <div th:if="${item.photoId != null}">
+            <img class="card-img-top p-2"
+                 style="height: 180px; object-fit: contain;"
+                 th:src="@{/files/{id}(id=${item.photoId})}" alt="">
         </div>
-        <div th:if="${product.photoId == null}">
-            <img class="card-img-top" th:src="" alt="">
+        <div th:if="${item.photoId == null}">
+            <!-- Заглушка, если фото нет -->
+            <img class="card-img-top p-2"
+                 style="height: 180px; object-fit: contain;"
+                 th:src="@{/static/img/icons/logo.png}" alt="">
         </div>
-
         <div class="card-body">
-            <h5 class="card-title mb-3 text-center" th:text="${product.name}"></h5>
+            <!-- Название -->
+            <h5 class="card-title mb-3 text-center" th:text="${item.name}"></h5>
+
             <div class="d-flex justify-content-center mb-3">
                 <ul class="list-group list-group-horizontal">
-                    <li class="list-group-item border-0" th:text="${product.price}"></li>
+                    <!-- Цена -->
+                    <li class="list-group-item border-0" th:text="${item.price}"></li>
+
+                    <!-- Избранное -->
                     <li class="list-group-item border-0">
                         <button class="btn btn" type="button">
-                            <img th:src="${product.favourite} ? '/static/img/icons/heart-red.png' : '/static/img/icons/heart-love.png'"
+                            <img th:src="${item.favourite} ? '/static/img/icons/heart-red.png' : '/static/img/icons/heart-love.png'"
                                  alt="">
                         </button>
                     </li>
-                    <li class="list-group-item border-0" th:text="${product.score}"></li>
+
+                    <!-- Рейтинг -->
+                    <li class="list-group-item border-0" th:text="${item.score}"></li>
                 </ul>
                 <div class="text-center">
-                    <form th:action="@{/buy/{id}(id=${product.id})}" method="POST">
-
+                    <form th:action="@{/buy/{id}(id=${item.id})}" method="POST">
                         <button type="submit" class="btn btn-primary"
                                 style="background-color: var(--brand-blue)">Купить
                         </button>
-
                     </form>
                 </div>
             </div>
