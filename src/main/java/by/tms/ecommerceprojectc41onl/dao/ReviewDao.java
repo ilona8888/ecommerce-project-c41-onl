@@ -16,6 +16,9 @@ import java.util.List;
 @Repository
 public class ReviewDao {
 
+    private static final String SELECT_AVERAGE_RATING_BY_ID = """
+            SELECT AVG(rating) AS average_value FROM reviews WHERE products_id = ?""";
+
     private final DataSource dataSource;
 
     public ReviewDao(DataSource dataSource) {
@@ -105,5 +108,22 @@ public class ReviewDao {
 
     private String normalizeComment(String comment) {
         return comment == null || comment.isBlank() ? null : comment.trim();
+    }
+
+    public double getProductRating(Long productId) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVERAGE_RATING_BY_ID)) {
+
+            preparedStatement.setLong(1, productId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getDouble("average_value");
+                }
+
+                throw new RuntimeException("Не возможно посчитать среднюю оценку по id %s товара".formatted(productId));
+            }
+        } catch (SQLException error) {
+            throw new RuntimeException("Ошибка расчёта средней оценки", error);
+        }
     }
 }

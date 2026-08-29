@@ -8,10 +8,12 @@ import by.tms.ecommerceprojectc41onl.services.CategoryService;
 import by.tms.ecommerceprojectc41onl.services.ProductService;
 import by.tms.ecommerceprojectc41onl.services.SessionService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,8 +30,6 @@ import java.io.IOException;
 @Controller
 @RequiredArgsConstructor
 public class CardController {
-
-    private final CategoryService categoryService;
 
     private final ProductService productService;
 
@@ -58,8 +58,14 @@ public class CardController {
      */
     @PostMapping(path = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String create(
-            @ModelAttribute("createProductRequestDto") CreateProductRequestDto createProductRequestDto,
-            HttpSession session) throws IOException {
+            @Valid @ModelAttribute("createProductRequestDto") CreateProductRequestDto createProductRequestDto,
+            BindingResult bindingResult,
+            HttpSession session
+    ) throws IOException {
+
+        if (bindingResult.hasErrors()) {
+            return "new-card";
+        }
 
         User user = sessionService.getCurrentUser(session);
 

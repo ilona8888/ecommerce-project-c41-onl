@@ -2,10 +2,12 @@ package by.tms.ecommerceprojectc41onl.services;
 
 import by.tms.ecommerceprojectc41onl.dao.*;
 import by.tms.ecommerceprojectc41onl.dto.CreateProductDto;
+import by.tms.ecommerceprojectc41onl.dto.FileData;
 import by.tms.ecommerceprojectc41onl.dto.ProductCardDto;
 import by.tms.ecommerceprojectc41onl.model.*;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -34,16 +36,24 @@ public class ProductService {
 
     private final ProductPhotoDao productPhotoDao;
 
+    private final ReviewDao reviewDao;
+
+    private final FavouriteDao favouriteDao;
+
     /**
      * Создание нового товара.
      *
      * @param createProductDto DTO для создания нового товара
      */
     public void create(CreateProductDto createProductDto) {
-        ProductPhoto photo = new ProductPhoto();
-        photo.setFile(createFile(createProductDto));
-        photo.setProduct(createProduct(createProductDto));
-        productPhotoDao.create(photo);
+        Product product = createProduct(createProductDto);
+        FileData fileData = createProductDto.fileData();
+        if (ArrayUtils.isNotEmpty(fileData.data()) && StringUtils.isNotEmpty(fileData.fileName())) {
+            ProductPhoto photo = new ProductPhoto();
+            photo.setFile(createFile(createProductDto));
+            photo.setProduct(product);
+            productPhotoDao.create(photo);
+        }
     }
 
     private Product createProduct(CreateProductDto createProductDto) {
@@ -74,8 +84,7 @@ public class ProductService {
     }
 
     // TODO : Реализовать
-    public List<ProductCardDto> getAllProductCards() {
-
+    public List<ProductCardDto> getAllProductCards(@Nullable User currentUser) {
         return productDao.getAll()
                 .stream()
                 .map(product -> {
@@ -90,10 +99,19 @@ public class ProductService {
                             product.getPrice(),
                             product.getDescription(),
                             photoId,
-                            0.0,      // score — пока нет рейтинга
-                            false     // favourite — пока нет избранного
+                            reviewDao.getProductRating(product.getId()),
+                            isFavoriteProduct(currentUser, product)     // favourite — пока нет избранного
                     );
                 })
                 .toList();
+    }
+
+    private boolean isFavoriteProduct(@Nullable User user, Product product) {
+        if (user == null) {
+            return false;
+        }
+
+        return favouriteDao.exists(user.getId(), product.getId());
+
     }
 }
