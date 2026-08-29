@@ -102,5 +102,40 @@ public class ProductDao {
         }
         return products;
     }
+
+    public List<Product> getByCategories(List<Long> categoryIds) {
+        if (categoryIds == null || categoryIds.isEmpty()) {
+            return getAll();
+        }
+
+        // Генерируем строку со знаками вопроса в зависимости от размера списка: "?, ?, ?"
+        String placeholders = String.join(",", Collections.nCopies(categoryIds.size(), "?"));
+        String query = "SELECT * FROM PRODUCTS WHERE CATEGORIES_ID IN (" + placeholders + ")";
+
+        List<Product> products = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            // Заполняем параметры
+            for (int i = 0; i < categoryIds.size(); i++) {
+                preparedStatement.setLong(i + 1, categoryIds.get(i));
+            }
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Product product = new Product();
+                    product.setId(resultSet.getLong("id"));
+                    product.setName(resultSet.getString("name"));
+                    product.setPrice(resultSet.getBigDecimal("price"));
+                    product.setDescription(resultSet.getString("description"));
+                    products.add(product);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка получения товаров по категориям", e);
+        }
+        return products;
+    }
 }
 
