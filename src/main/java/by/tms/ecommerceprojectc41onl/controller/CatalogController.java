@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
+/**
+ * Контролер для главной страницы.
+ */
 @Controller
 @RequiredArgsConstructor
 public class CatalogController {
@@ -21,7 +24,12 @@ public class CatalogController {
 
     private final SessionService sessionService;
 
-    // Главная страница проекта - каталог товаров
+    /**
+     * Главная страница проекта - каталог товаров.
+     * @param model Модель.
+     * @param session Сессия пользователя.
+     * @return Главная страница.
+     */
     @GetMapping("/")
     public String home(Model model, HttpSession session) {
         User currentUser = sessionService.getCurrentUser(session);

@@ -46,6 +46,12 @@ public class FileDao {
         }
     }
 
+    /**
+     * Получение файла по идентификатору.
+     *
+     * @param id Файловый идентификатор.
+     * @return Данные о файле из БД.
+     */
     public File getById(long id) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BY_ID_QUERY)) {
@@ -63,6 +69,13 @@ public class FileDao {
         }
     }
 
+    /**
+     * Преобразование данных из БД в объект файла.
+     *
+     * @param resultSet Данные результата запроса из БД.
+     * @return Данные о файле.
+     * @throws SQLException Исключение при доступе к данным из БД.
+     */
     private File mapToFile(ResultSet resultSet) throws SQLException {
         var file = new File();
         file.setId(resultSet.getLong("id"));

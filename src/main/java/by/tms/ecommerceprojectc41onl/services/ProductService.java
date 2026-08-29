@@ -56,6 +56,11 @@ public class ProductService {
         }
     }
 
+    /**
+     * Создание продукта.
+     * @param createProductDto Dto для создания продукта.
+     * @return Товар.
+     */
     private Product createProduct(CreateProductDto createProductDto) {
         Seller seller = getSeller(createProductDto);
 
@@ -69,12 +74,21 @@ public class ProductService {
         return productDao.create(product, seller, category);
     }
 
+    /**
+     * Получение продавца.
+     * @param createProductDto Dto для создания продукта.
+     * @return Продавец.
+     */
     private Seller getSeller(CreateProductDto createProductDto) {
         User user = userDao.getByName(createProductDto.userName());
 
         return sellerDao.getByUserId(user.getId());
     }
-
+    /**
+     * Получение файла.
+     * @param createProductDto Dto для создания продукта.
+     * @return Файл.
+     */
     private File createFile(CreateProductDto createProductDto) {
         File file = new File();
         file.setFileName(createProductDto.fileData().fileName());
@@ -83,7 +97,11 @@ public class ProductService {
         return fileDao.create(file);
     }
 
-    // TODO : Реализовать
+    /**
+     * Получение всех карточек товара.
+     * @param currentUser Авторизованный пользователь (null - если не авторизованный).
+     * @return Список карточек товара.
+     */
     public List<ProductCardDto> getAllProductCards(@Nullable User currentUser) {
         return productDao.getAll()
                 .stream()
@@ -106,6 +124,12 @@ public class ProductService {
                 .toList();
     }
 
+    /**
+     * Проверка, что товар добавлен в избранное.
+     * @param user Авторизованный пользователь.
+     * @param product Товар.
+     * @return Результат проверки.
+     */
     private boolean isFavoriteProduct(@Nullable User user, Product product) {
         if (user == null) {
             return false;

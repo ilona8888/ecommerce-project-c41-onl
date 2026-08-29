@@ -13,6 +13,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DAO для отзывав.
+ */
 @Repository
 public class ReviewDao {
 
@@ -110,7 +113,12 @@ public class ReviewDao {
         return comment == null || comment.isBlank() ? null : comment.trim();
     }
 
-    public double getProductRating(Long productId) {
+    /**
+     * Получение средней оценки для товара.
+     * @param productId Идентификатор продукта.
+     * @return Средняя оценка.
+     */
+    public double getProductRating(long productId) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVERAGE_RATING_BY_ID)) {
 

@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * @author Ирина Мизгир
+ * Контролер для избранных товаров.
+  * @author Ирина Мизгир
  * @date 29.08.2026 19:32
  */
 @Controller
@@ -21,6 +22,13 @@ public class FavoriteController {
 
     private final FavoriteService favoriteService;
 
+    /**
+     * Добавление/удаление в/из избранного.
+     * @param session Сессия пользователя.
+     * @param productId Идентификатор продукта.
+     * @param flag Значение избранности (true - добавить в избранное, false- удалить из избранного).
+     * @return Страница сайта.
+     */
     @PostMapping(value = "/favorite")
     public String makeFavorite(HttpSession session,
                                @RequestParam("product-id") long productId,

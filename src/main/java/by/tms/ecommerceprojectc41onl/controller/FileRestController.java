@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * REST-контроллер для работы с файлами.
  * @author Ирина Мизгир
  * @date 29.08.2026 17:32
  */
@@ -16,6 +17,11 @@ public class FileRestController {
 
     private final FileService fileService;
 
+    /**
+     * Получение файла по идентификатору.
+     * @param fileId Файловый идентификатор.
+     * @return Данные файла.
+     */
     @GetMapping(path = "/files/{fileId}")
     public byte[] getFileById(@PathVariable("fileId") long fileId) {
       return fileService.getFileById(fileId);
