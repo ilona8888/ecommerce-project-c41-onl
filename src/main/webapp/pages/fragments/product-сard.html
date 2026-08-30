@@ -28,7 +28,6 @@
 
                     <!-- Избранное -->
                     <li class="list-group-item border-0">
-                        <!-- Укажите правильный URL вашего контроллера в th:action -->
                         <form th:action="@{/favorites/toggle}" method="post">
                             <!-- Обязательно передаем ID товара, чтобы контроллер понял, что добавлять -->
                             <input type="hidden" name="itemId" th:value="${item.id}" />
