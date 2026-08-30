@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Сервис для работы с товарами.
@@ -33,6 +34,8 @@ public class ProductService {
     private final FileDao fileDao;
 
     private final ProductPhotoDao productPhotoDao;
+
+    private final FavouriteDao favouriteDao;
 
     /**
      * Создание нового товара.
@@ -73,27 +76,62 @@ public class ProductService {
         return fileDao.create(file);
     }
 
-    // TODO : Реализовать
-    public List<ProductCardDto> getAllProductCards() {
+    /**
+     * Карточки всех товаров каталога.
+     *
+     * @param user текущий пользователь (может быть null — гость)
+     * @return список карточек, у гостя все сердечки пустые
+     */
+    public List<ProductCardDto> getAllProductCards(@Nullable User user) {
+
+        Set<Long> favouriteIds = getFavouriteIds(user);
 
         return productDao.getAll()
                 .stream()
-                .map(product -> {
-
-                    Long photoId = productPhotoDao
-                            .getPhotoIdByProductId(product.getId())
-                            .orElse(null);
-
-                    return new ProductCardDto(
-                            product.getId(),
-                            product.getName(),
-                            product.getPrice(),
-                            product.getDescription(),
-                            photoId,
-                            0.0,      // score — пока нет рейтинга
-                            false     // favourite — пока нет избранного
-                    );
-                })
+                .map(product -> toCard(product, favouriteIds))
                 .toList();
+    }
+
+    /**
+     * Карточки товаров, которые пользователь добавил в избранное.
+     *
+     * @param user текущий пользователь
+     * @return список карточек, у всех сердечко закрашено
+     */
+    public List<ProductCardDto> getFavouriteProductCards(User user) {
+
+        Set<Long> favouriteIds = getFavouriteIds(user);
+
+        return favouriteDao.findFavoritesByUser(user.getId())
+                .stream()
+                .map(product -> toCard(product, favouriteIds))
+                .toList();
+    }
+
+    /**
+     * ID избранных товаров пользователя одним запросом,
+     * чтобы не дёргать БД на каждую карточку.
+     */
+    private Set<Long> getFavouriteIds(@Nullable User user) {
+        return (user == null || user.getId() == null)
+                ? Set.of()
+                : favouriteDao.findFavouriteProductIds(user.getId());
+    }
+
+    private ProductCardDto toCard(Product product, Set<Long> favouriteIds) {
+
+        Long photoId = productPhotoDao
+                .getPhotoIdByProductId(product.getId())
+                .orElse(null);
+
+        return new ProductCardDto(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getDescription(),
+                photoId,
+                0.0,                                    // score — пока нет рейтинга
+                favouriteIds.contains(product.getId())  // товар в избранном у текущего пользователя
+        );
     }
 }

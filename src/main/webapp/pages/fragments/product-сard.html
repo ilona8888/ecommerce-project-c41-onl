@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <body>
-<div th:fragment="productCard(productCard)">
-    <!--/*@thymesVar id="productCard" type="by.tms.ecommerceprojectc41onl.dto.ProductCardDto"*/-->
+<!--/*@thymesVar id="product" type="by.tms.ecommerceprojectc41onl.dto.ProductCardDto"*/-->
+<!-- product   - карточка товара
+     returnUrl - куда вернуть пользователя после удаления из избранного -->
+<div th:fragment="productCard(product, returnUrl)">
     <div class="card" style="width: 18rem;">
 
         <div th:if="${product.photoId != null}">
             <img class="card-img-top" th:src="@{/files/${product.photoId}}" alt="">
         </div>
         <div th:if="${product.photoId == null}">
-            <img class="card-img-top" th:src="" alt="">
+            <img class="card-img-top" th:src="@{/static/img/icons/no-photo.png}" alt="">
         </div>
 
         <div class="card-body">
@@ -18,10 +20,26 @@
                 <ul class="list-group list-group-horizontal">
                     <li class="list-group-item border-0" th:text="${product.price}"></li>
                     <li class="list-group-item border-0">
-                        <button class="btn btn" type="button">
-                            <img th:src="${product.favourite} ? '/static/img/icons/heart-red.png' : '/static/img/icons/heart-love.png'"
-                                 alt="">
-                        </button>
+
+                        <!-- Товара нет в избранном - показываем пустое сердце и форму добавления -->
+                        <form th:unless="${product.favourite}" method="post" class="m-0"
+                              th:action="@{/favorites/add/{id}(id=${product.id})}">
+                            <button class="btn btn p-0" type="submit" title="Добавить в избранное">
+                                <img th:src="@{/static/img/icons/heart-love.png}"
+                                     alt="" width="24" height="24">
+                            </button>
+                        </form>
+
+                        <!-- Товар уже в избранном - красное сердце и форма удаления.
+                             returnUrl нужен, чтобы вернуть пользователя на ту же страницу -->
+                        <form th:if="${product.favourite}" method="post" class="m-0"
+                              th:action="@{/favorites/remove/{id}(id=${product.id})}">
+                            <input type="hidden" name="returnUrl" th:value="${returnUrl}">
+                            <button class="btn btn p-0" type="submit" title="Убрать из избранного">
+                                <img th:src="@{/static/img/icons/heart-red.png}"
+                                     alt="" width="24" height="24">
+                            </button>
+                        </form>
                     </li>
                     <li class="list-group-item border-0" th:text="${product.score}"></li>
                 </ul>
