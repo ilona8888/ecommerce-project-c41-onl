@@ -78,10 +78,9 @@
                                 </form>
 
                                 <!-- 2. Форма для текста комментария -->
-                                <form th:action="@{/reviews/comment}" method="POST">
-                                    <input type="hidden" name="productId" th:value="${purchase.product.id}" />
-
+                                <form th:action="@{/reviews/comment}" method="post">
                                     <div class="d-flex justify-content-between align-items-center">
+                                        <input type="hidden" name="productId" th:value="${purchase.product.id}">
                                         <input type="text" name="comment" class="form-control me-2 form-control-sm" placeholder="Написать комментарий..." required>
                                         <button type="submit" class="btn btn-primary btn-sm">Отправить</button>
                                     </div>
