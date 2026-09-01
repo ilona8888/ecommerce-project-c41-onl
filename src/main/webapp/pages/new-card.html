@@ -47,18 +47,33 @@
                             <input type="file" class="form-control mb-3" id="file-input" th:field="*{file}"
                                    placeholder="Выберите файл">
                             <input class="form-control mb-3" type="text" id="name-input" th:field="*{name}"
-                                   placeholder="Название товара">
+                                   placeholder="Название товара"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name
+                                error
+                            </div>
                             <input class="form-control mb-3" type="number" id="price-input" th:field="*{price}"
-                                   placeholder="Цена">
+                                   placeholder="Цена" th:classappend="${#fields.hasErrors('price')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('price')}" th:errors="*{price}">
+                                Price error
+                            </div>
                             <input class="form-control mb-3" type="text" id="description-input"
-                                   th:field="*{description}" placeholder="Описание">
-                            <select class="form-control mb-3" id="category-input" th:field="*{categoryId}">
+                                   th:field="*{description}" placeholder="Описание"
+                                   th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}"
+                                 th:errors="*{description}">Description error
+                            </div>
+                            <select class="form-control mb-3" id="category-input" th:field="*{categoryId}"
+                                    th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid'">>
                                 <option value="">Выберите категорию</option>
                                 <option th:each="cat : ${categories}"
                                         th:value="${cat.id}"
                                         th:text="${cat.name}">Category Name
                                 </option>
                             </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('categoryId')}"
+                                 th:errors="*{categoryId}">Category error
+                            </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary"
                                         style="background-color: var(--brand-blue)">Создать

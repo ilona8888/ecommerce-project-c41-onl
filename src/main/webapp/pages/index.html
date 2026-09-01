@@ -51,6 +51,48 @@
 <div th:replace="~{fragments/filter :: filterPanel}"></div>
 <div th:replace="~{fragments/footer :: siteFooter}"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const container = document.getElementById('products-container');
+        if (container) {
+            container.addEventListener('click', async (event) => {
+                const btn = event.target.closest('[id^="button-favirite-"]');
+                if (!btn) {
+                    return;
+                }
+                event.preventDefault();
+                event.stopPropagation();
+                // Define your query parameters
+                const params = {
+                    'product-id': btn.dataset.id,
+                    flag: !(btn.dataset.favorite === 'true'),
+
+                };
+
+                // Convert the object to a query string: ?search=javascript&limit=10&page=1
+                const queryString = new URLSearchParams(params).toString();
+
+                try {
+                    const response = await fetch(`/favorite?${queryString}`,
+                        {
+                            method: 'POST',
+                            redirect: 'follow'
+                        }
+                    )
+
+                    // // HTTP 301 response
+                    // // HOW CAN I FOLLOW THE HTTP REDIRECT RESPONSE?
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    }
+                } catch (error) {
+                    console.error('Fetch failed:', error);
+                }
+
+            })
+        }
+    });
+</script>
 
 </body>
 </html>
