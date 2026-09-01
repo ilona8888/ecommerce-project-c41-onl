@@ -56,5 +56,14 @@ public class User {
         this.birthday = birthday;
         this.role = role;
     }
+
+    // Для регистрации
+    public User(String userName, String email, String firstName, String lastName, LocalDate birthday) {
+        this.userName = userName;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthday = birthday;
+    }
 }
 
