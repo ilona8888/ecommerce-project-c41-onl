@@ -64,17 +64,64 @@ public class ProductDao {
 
     private final List<Product> productsList = new ArrayList<>();
 
+    private Product mapProduct(ResultSet resultSet, String idColumn) throws SQLException {
+        Product product = new Product(
+                resultSet.getLong(idColumn),
+                resultSet.getString("NAME"),
+                resultSet.getBigDecimal("PRICE")
+        );
+        product.setDescription(resultSet.getString("DESCRIPTION"));
+        return product;
+    }
+
     // TODO : Данный метод должен брать список товаров из БД(так как коллекция productsList(строчка 65) всегда пустая)
     public List<Product> searchProducts(String keyword) {
         if (keyword == null || keyword.isBlank()) {
             return Collections.emptyList();
         }
 
-        String lowerKeyword = keyword.toLowerCase();
-        return productsList.stream()
-                .filter(product -> product.getName() != null &&
-                        product.getName().toLowerCase().contains(lowerKeyword))
-                .collect(Collectors.toList());
+        List<Product> products = new ArrayList<>();
+        String sql = "SELECT * FROM products WHERE LOWER(name) LIKE LOWER(?)";
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, "%" + keyword + "%");
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Product product = mapProduct(resultSet, "ID");
+                    products.add(product);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка поиска товаров", e);
+        }
+
+        return products;
+    }
+
+    public Product findById(Long id) {
+        String sql = "SELECT * FROM products WHERE id = ?";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setLong(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    Product product = new Product();
+                    product.setId(resultSet.getLong("id"));
+                    product.setName(resultSet.getString("name"));
+                    product.setPrice(resultSet.getBigDecimal("price"));
+                    product.setDescription(resultSet.getString("description"));
+
+                    return product;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка поиска товара по ID", e);
+        }
+        return null;
     }
 
     public List<Product> getAll() {

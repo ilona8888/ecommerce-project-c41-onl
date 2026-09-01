@@ -2,6 +2,7 @@ package by.tms.ecommerceprojectc41onl.services;
 
 import by.tms.ecommerceprojectc41onl.dao.ProductDao;
 import by.tms.ecommerceprojectc41onl.dao.PurchaseDao;
+import by.tms.ecommerceprojectc41onl.model.Product;
 import by.tms.ecommerceprojectc41onl.model.Purchase;
 import by.tms.ecommerceprojectc41onl.model.User;
 import org.springframework.stereotype.Service;
@@ -22,19 +23,20 @@ public class PurchaseService {
     }
 
     public void buyProduct(Long productId, User user) {
-       // Product product = productDao.findById(productId); TODO : Реализовать метод в классе ProductDao
+       Product product = productDao.findById(productId); //TODO : Реализовать метод в классе ProductDao
 
         // TODO : Раскомментировать когда будет product (строчка 28)
-//        if (product == null) {
-//            throw new IllegalArgumentException("Товар с ID " + productId + " не найден");
-//        }
-//
-//        Purchase purchase = new Purchase();
-//        purchase.setUser(user);
-//        purchase.setProduct(product);
-//        purchase.setPurchaseDate(LocalDateTime.now());
+        if (product == null) {
+            throw new IllegalArgumentException("Товар с ID " + productId + " не найден");
+        }
 
-        // purchaseDao.save(purchase); TODO : Реализовать метод в классе ProductDao PurchaseDao
+        Purchase purchase = new Purchase();
+        purchase.setUser(user);
+        purchase.setProduct(product);
+        purchase.setPurchaseDate(LocalDateTime.now());
+        purchase.setCost(product.getPrice());
+
+        purchaseDao.save(purchase); //TODO : Реализовать метод в классе ProductDao PurchaseDao
     }
 
     public List<Purchase> getCurrentUserPurchases(User user) {

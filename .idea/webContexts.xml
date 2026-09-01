@@ -5,6 +5,7 @@
       <map>
         <entry key="file://$PROJECT_DIR$/src/main/webapp/pages/fragments/product-сard.html" value="file://$PROJECT_DIR$/src/main/webapp/pages/fragments" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/pages/login.html" value="file://$PROJECT_DIR$/src/main/webapp/pages" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/pages/purchases.html" value="file://$PROJECT_DIR$/src/main/webapp/pages" />
       </map>
     </option>
   </component>
