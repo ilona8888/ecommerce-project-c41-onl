@@ -1,36 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <body>
-<div th:fragment="productCard(productCard)">
-    <!--/*@thymesVar id="productCard" type="by.tms.ecommerceprojectc41onl.dto.ProductCardDto"*/-->
-    <div class="card" style="width: 18rem;">
+<div th:fragment="productCard(product)">
 
-        <div th:if="${product.photoId != null}">
-            <img class="card-img-top" th:src="@{/files/${product.photoId}}" alt="">
-        </div>
-        <div th:if="${product.photoId == null}">
-            <img class="card-img-top" th:src="" alt="">
-        </div>
-
-        <div class="card-body">
-            <h5 class="card-title mb-3 text-center" th:text="${product.name}"></h5>
-            <div class="d-flex justify-content-center mb-3">
-                <ul class="list-group list-group-horizontal">
-                    <li class="list-group-item border-0" th:text="${product.price}"></li>
-                    <li class="list-group-item border-0">
-                        <button class="btn btn" type="button">
-                            <img th:src="${product.favourite} ? '/static/img/icons/heart-red.png' : '/static/img/icons/heart-love.png'"
-                                 alt="">
-                        </button>
-                    </li>
-                    <li class="list-group-item border-0" th:text="${product.score}"></li>
-                </ul>
+    <div class="card w-100" style="max-width: 18rem;">
+        <a class="text-decoration-none position-relative" th:href="@{/product-details.html(id=${product.id})}">
+            <div class="card-body">
+                <div class="ratio ratio-1x1 mt-2 mb-3 px-2">
+                    <img class="card-img-top"
+                         style="object-fit: cover;"
+                         th:src="${product.photoId != null}
+                                 ? @{/files/{id}(id=${product.photoId})}
+                                 : @{/static/img/icons/no-photo.png}"
+                         alt="">
+                </div>
             </div>
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary"
-                        style="background-color: var(--brand-blue)">Купить
+        </a>
+        <h5 class="card-title mb-3 text-center" th:text="${product.name}"></h5>
+        <div class="d-flex justify-content-center mb-3">
+            <ul class="d-flex flex-row align-items-center gap-3 p-0 m-0" style="list-style:none;">
+                <li class="list-group-item border-0" th:text="${product.price}"></li>
+                <li class="list-group-item border-0">
+                    <button th:data-id="${product.id}"
+                            th:data-favorite="|${product.isFavorite}|"
+                            th:id="|button-favirite-${product.id}|"
+                            class="btn btn z-3"
+                            type="button">
+                        <img style="width: 28px; height: 28px;"
+                             th:src="${product.isFavorite} ? '/static/img/icons/heart-red.png' : '/static/img/icons/heart-love.png'"
+                             alt="">
+                    </button>
+                </li>
+                <li class="list-group-item border-0"
+                    th:text="${product.score > 0 ? product.score : 'Нет оценок'}">
+                </li>
+            </ul>
+        </div>
+        <div class="text-center"
+             th:if="${user != null and (user.role.name() == 'BUYER' or user.role.name() == 'SELLER')}">
+            <form th:action="@{/buy/{id}(id=${product.id})}" method="POST">
+                <button type="submit" onclick=""
+                        class="btn btn-primary w-100 mb-4"
+                        style="background-color: var(--brand-blue); max-width: 90%; margin: 0 auto;">
+                    Купить
                 </button>
-            </div>
+            </form>
         </div>
     </div>
 </div>
