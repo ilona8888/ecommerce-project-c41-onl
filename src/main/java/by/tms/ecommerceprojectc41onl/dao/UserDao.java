@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Optional;
 
 /**
@@ -28,6 +25,11 @@ public class UserDao {
     private static final String SELECT_BY_ID_QUERY = "SELECT * FROM USERS WHERE ID = ?";
 
     private static final String FIND_BY_EMAIL_QUERY = "SELECT * FROM USERS WHERE EMAIL=?;";
+
+    private static final String SAVE_QUERY = "INSERT INTO users (user_name, email, password_hash, status, first_name, last_name, birthday, role) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    private static final String UPDATE_QUERY = "UPDATE users SET status=?, first_name=?, last_name=?, birthday=?, role=?, password_hash=? WHERE id=?";
+
 
     private final DataSource dataSource;
 
@@ -67,6 +69,7 @@ public class UserDao {
                 UserRole.valueOf(resultSet.getString("ROLE").trim().toUpperCase())
         );
     }
+
     public Optional<User> getById(long id) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BY_ID_QUERY)) {
@@ -98,4 +101,51 @@ public class UserDao {
             throw new RuntimeException("Ошибка при поиске пользователя по email: " + email, e);
         }
     }
+
+    public User save(User user) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SAVE_QUERY, Statement.RETURN_GENERATED_KEYS)) {
+
+            preparedStatement.setString(1, user.getUserName());
+            preparedStatement.setString(2, user.getEmail());
+            preparedStatement.setString(3, user.getPasswordHash());
+            preparedStatement.setBoolean(4, user.isStatus());
+            preparedStatement.setString(5, user.getFirstName());
+            preparedStatement.setString(6, user.getLastName());
+            preparedStatement.setObject(7, user.getBirthday());
+            preparedStatement.setString(8, user.getRole().toString());
+
+            preparedStatement.executeUpdate();
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    user.setId(generatedKeys.getLong(1));
+                } else {
+                    throw new SQLException("Не удалось получить сгенерированный id.");
+                }
+            }
+            return user;
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка сохранения нового пользователя.", e);
+        }
+    }
+
+    public void update(User user) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY)) {
+
+            preparedStatement.setBoolean(1, user.isStatus());
+            preparedStatement.setString(2, user.getFirstName());
+            preparedStatement.setString(3, user.getLastName());
+            preparedStatement.setObject(4, user.getBirthday());
+            preparedStatement.setString(5, user.getRole().toString());
+            preparedStatement.setString(6, user.getPasswordHash());
+            preparedStatement.setLong(7, user.getId());
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка обновления пользователя.", e);
+        }
+    }
+
+
 }

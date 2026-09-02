@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recover password</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="${ctx}/resources/css/style.css">
+</head>
+<body class="bg-body-tertiary">
+<div class="container" style="max-width:440px;">
+    <div class="card shadow-sm mt-5">
+        <div class="card-body p-4">
+            <h5 class="mb-2">Восстановить пароль</h5>
+            <p class="text-secondary small">Ваш новый пароль должен состоять из 8&ndash;20 символов, содержать буквы,
+                цифры и специальные символы и не должен содержать пробелы или эмодзи.</p>
+            <div th:if="${error != null}" class="alert alert-danger py-2" th:text="${error}"></div>
+            <form th:action="@{/recovery/reset}" method="POST">
+                <input type="hidden" name="token" th:value="${token}">
+                <div class="mb-3">
+                    <div class="input-group">
+                        <input type="password" name="password" id="pwd" class="form-control" placeholder="New password" required>
+                        <button class="btn btn-outline-secondary" type="button" onclick="togglePwd('pwd')">&#128065;</button>
+                    </div>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn text-white" style="background-color:#5C7CFA;">Войти с новым паролем</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function togglePwd(id) {
+        const el = document.getElementById(id);
+        el.type = el.type === 'password' ? 'text' : 'password';
+    }
+</script>
+</body>
+</html>
