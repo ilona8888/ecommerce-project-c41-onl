@@ -22,12 +22,11 @@ public class TestController {
     public String catalog() {
         return "index";
     }
-
-    // Избранное
-    @GetMapping("/favorites")
-    public String favorites() {
-        return "favorites";
-    }
+    
+//    @GetMapping("/favorites")
+//    public String favorites() {
+//        return "favorites";
+//    }
 
     // Покупки
     @GetMapping("/test/purchases")
@@ -76,5 +75,4 @@ public class TestController {
     public String check() {
         throw new RuntimeException("Тестовое исключение для проверки 500 ошибки");
     }
-
 }

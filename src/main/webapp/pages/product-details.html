@@ -19,18 +19,35 @@
     <div class="container-fluid">
         <div class="row g-4">
 
+            <!-- Левая колонка: фото товара -->
             <div class="col-12 col-lg-5">
-                <!-- Тут будет изображение товара -->
-                <div class="w-100 bg-light p-3" style="min-height: 420px;"></div>
+                <div class="w-100 bg-light p-3 d-flex align-items-center justify-content-center" style="min-height: 420px;">
+                    <img th:if="${product != null}"
+                         th:src="@{/static/img/2336.jpg}"
+                         alt="Фото товара"
+                         class="img-fluid" />
+                </div>
             </div>
 
+            <!-- Правая колонка: информация о товаре -->
             <div class="col-12 col-lg-7">
-                <!-- Тут будет описание товара: название, продавец, описание, цена, кнопка «Купить» -->
-                <div class="w-100 bg-white p-3" style="min-height: 420px;"></div>
+                <div class="w-100 bg-white p-4" style="min-height: 420px;">
+                    <h1 th:text="${product != null ? product.name : 'Товар не найден'}">Название товара</h1>
+
+                    <p th:text="${product != null ? product.description : 'Описание отсутствует'}">Описание</p>
+
+                    <h3 class="text-primary" th:text="${product != null ? product.price : '0.00'}">0.00</h3>
+
+                    <form th:if="${product != null}" th:action="@{/buy/{id}(id=${product.id})}" method="post">
+                        <button type="submit" class="btn btn-success btn-lg mt-3">Купить</button>
+                    </form>
+
+                    <p th:if="${product == null}" class="text-danger">Товар не найден</p>
+                </div>
             </div>
         </div>
 
-        <!-- Тут будет список комментариев с оценками -->
+        <!-- Отзывы -->
         <div class="w-100 bg-light p-3 mt-4" style="min-height: 160px;">
             <h4 class="mb-3">Отзывы</h4>
             <p th:if="${reviews == null or #lists.isEmpty(reviews)}" class="text-muted mb-0">Отзывов пока нет.</p>

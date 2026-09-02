@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -96,12 +97,24 @@ public class PurchaseDao {
             statement.setLong(1, purchase.getUser().getId());
             statement.setLong(2, purchase.getProduct().getId());
             statement.setBigDecimal(3, purchase.getCost());
-            // Конвертируем LocalDateTime в Timestamp для базы данных
             statement.setTimestamp(4, java.sql.Timestamp.valueOf(purchase.getPurchaseDate()));
 
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка сохранения покупки", e);
+        }
+    }
+
+    public void create(User user, Product product, BigDecimal price) {
+        String sql = "INSERT INTO PURCHASES (COST, USERS_ID, PRODUCTS_ID) VALUES (?, ?, ?)";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setBigDecimal(1, price);
+            ps.setLong(2, user.getId());
+            ps.setLong(3, product.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка создания покупки", e);
         }
     }
 }
