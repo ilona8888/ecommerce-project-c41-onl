@@ -111,12 +111,13 @@
 
                     <!-- Создание категорий (Администратор) -->
                     <th:block th:if="${user != null and user.role.name() == 'ADMIN'}">
-                        <a class="nav-icon-link text-center" th:href="@{/}">
-                            <img class="nav-icon d-block mx-auto" th:src="@{/static/img/icons/add.png}" alt="Категории">
+                        <button type="button" class="nav-icon-link text-center btn btn-link p-0"
+                                data-bs-toggle="modal"
+                                data-bs-target="#CardModal">
+                            <img class="nav-icon d-block mx-auto" th:src="@{/static/img/icons/add.png}" alt="Добавить категорию">
                             <span>Категории</span>
-                        </a>
+                        </button>
                     </th:block>
-
                 </div>
             </div>
         </nav>

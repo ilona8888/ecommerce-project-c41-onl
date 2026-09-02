@@ -54,6 +54,11 @@ public class AuthController {
                 sessionService.rememberMe(resp, user.getId());
             }
 
+            //Переадресация на страницу администратора при роли Администратор
+            if (user.getRole().name().equals("ADMIN")) {
+                return "redirect:/admin";
+            }
+
             return "redirect:/";
         } catch (AuthenticationException e) {
             model.addAttribute("error", e.getMessage());

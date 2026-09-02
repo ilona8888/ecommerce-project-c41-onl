@@ -3,6 +3,7 @@ package by.tms.ecommerceprojectc41onl.services;
 import by.tms.ecommerceprojectc41onl.dao.CategoryDao;
 import by.tms.ecommerceprojectc41onl.dto.CategoryDto;
 import by.tms.ecommerceprojectc41onl.mappers.CategoryMapper;
+import by.tms.ecommerceprojectc41onl.model.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,12 @@ public class CategoryService {
         return categoryDao.findAll().stream()
                 .map(categoryMapper::toDto)
                 .toList();
+    }
+
+    public void save(CategoryDto categoryDto) {
+        Category category = new Category();
+        category.setName(categoryDto.name());
+        categoryDao.save(category);
     }
 
 }

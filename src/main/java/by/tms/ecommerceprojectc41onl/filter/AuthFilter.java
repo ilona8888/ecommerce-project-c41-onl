@@ -75,6 +75,11 @@ public class AuthFilter implements Filter {
             return;
         }
 
+        if (path.equals("/") && role == UserRole.ADMIN) {
+            res.sendRedirect("/admin");
+            return;
+        }
+
         chain.doFilter(req, res);
     }
 }

@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +22,8 @@ public class CategoryDao {
     private static final String SELECT_ALL_QUERY = "SELECT * FROM CATEGORIES";
 
     private static final String SELECT_BY_ID_QUERY = "SELECT * FROM CATEGORIES WHERE id = ?";
+
+    private static final String INSERT_CATEGORY_QUERY = "INSERT INTO CATEGORIES (NAME) VALUES (?)";
 
     private final DataSource dataSource;
 
@@ -73,17 +72,28 @@ public class CategoryDao {
                     return mapToCategory(resultSet);
                 }
 
-                throw new RuntimeException("Не найден пользователь по id %s".formatted(id));
+                throw new RuntimeException("Не найдена категория по id %s".formatted(id));
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Ошибка поиска продавца", e);
+            throw new RuntimeException("Ошибка поиска категории", e);
         }
     }
 
-    //TODO : Реализовать метод для роли ADMIN
-    public Category save(){
-        //тут писать код для сохранения категории
-        return null; //заменить null на категорию, которую создали с помощью этого метода
-    }
+    public void save(Category category) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_CATEGORY_QUERY, Statement.RETURN_GENERATED_KEYS)) {
 
+            preparedStatement.setString(1, category.getName());
+            preparedStatement.executeUpdate();
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    category.setId(generatedKeys.getLong(1));
+                } else {
+                    throw new SQLException("Не удалось получить сгенерированный id.");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка сохранения новой категории.", e);
+        }
+    }
 }
