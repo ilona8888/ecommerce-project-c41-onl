@@ -28,8 +28,7 @@ public class CreateProductRequestDto {
     /**
      * Id категории.
      */
-    private @NotNull Integer categoryId;
-
+    private  @NotNull(message = "Необходимо выбрать категорию товара") Integer categoryId;
     /**
      * Цена товара.
      */
