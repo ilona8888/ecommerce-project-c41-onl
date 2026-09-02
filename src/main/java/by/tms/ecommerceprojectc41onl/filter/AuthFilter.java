@@ -52,6 +52,10 @@ public class AuthFilter implements Filter {
         // Залогиненный пользователь
         UserRole role = user.getRole();
 
+        if (path.startsWith("/profile/become-seller")) {
+            chain.doFilter(req, res);
+            return;
+        }
         // ADMIN зона
         if (path.startsWith("/admin") && role != UserRole.ADMIN) {
             res.sendRedirect("/403");
@@ -59,11 +63,10 @@ public class AuthFilter implements Filter {
         }
 
         // SELLER зона
-        if (path.startsWith("/seller") && role != UserRole.SELLER) {
+        if (path.startsWith("/seller") && !path.startsWith("/sellerPage") && role != UserRole.SELLER) {
             res.sendRedirect("/403");
             return;
         }
-
         // TODO : пути пересмотреть
         // Покупательские зоны — доступны BUYER и SELLER
         if ((path.startsWith("/favorites") ||

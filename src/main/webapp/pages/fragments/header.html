@@ -37,7 +37,6 @@
                     <!-- Покупки (BUYER + SELLER) -->
                     <th:block th:if="${user != null and (user.role.name() == 'BUYER' or user.role.name() == 'SELLER')}">
                         <a class="nav-icon-link text-center" th:href="@{/purchases}">
-
                             <img class="nav-icon d-block mx-auto" th:src="@{/static/img/icons/order.png}" alt="Покупки">
                             <span>Покупки</span>
                         </a>
@@ -51,9 +50,11 @@
                         </a>
                     </th:block>
 
-                    <!-- Стать продавцом (только для BUYER) -->
+                    <!-- Заменили href на открытие модального окна -->
                     <th:block th:if="${user != null and user.role.name() == 'BUYER'}">
-                        <a class="nav-icon-link text-center" th:href="@{/becomeSeller}">
+                        <a class="nav-icon-link text-center" href="#" role="button"
+                           data-bs-toggle="modal"
+                           data-bs-target="#becomeSellerModal">
                             <img class="nav-icon d-block mx-auto" th:src="@{/static/img/icons/becomeSeller.png}" alt="Стать продавцом">
                             <span>Стать продавцом</span>
                         </a>
@@ -81,7 +82,7 @@
                             <!-- Покупатель -->
                             <th:block th:if="${user != null and user.role.name() == 'BUYER'}">
                                 <a class="btn btn-link w-100 fs-5 text-decoration-none" th:href="@{/logout}">Выйти</a>
-                                <a class="btn btn-link w-100 fs-5 text-decoration-none text-danger border-top mt-2 pt-2"  th:href="@{/deleteAccount}">Удалить аккаунт</a>
+                                <a class="btn btn-link w-100 fs-5 text-decoration-none text-danger border-top mt-2 pt-2" th:href="@{/deleteAccount}">Удалить аккаунт</a>
                             </th:block>
 
                             <!-- Продавец -->
@@ -90,7 +91,7 @@
                                     О продавце
                                 </a>
                                 <a class="btn btn-link w-100 fs-5 text-decoration-none" th:href="@{/logout}">Выйти</a>
-                                <a class="btn btn-link w-100 fs-5 text-decoration-none text-danger border-top mt-2 pt-2"  th:href="@{/deleteAccount}">Удалить аккаунт</a>
+                                <a class="btn btn-link w-100 fs-5 text-decoration-none text-danger border-top mt-2 pt-2" th:href="@{/deleteAccount}">Удалить аккаунт</a>
                             </th:block>
 
                             <!-- Админ -->
@@ -136,6 +137,32 @@
                     th:text="${cat.name}">
                 </li>
             </ul>
+        </div>
+    </div>
+
+    <!-- Модальное окно подтверждения перехода в продавцы -->
+    <div class="modal fade" id="becomeSellerModal" tabindex="-1" aria-labelledby="becomeSellerModalLabel" aria-hidden="true"
+         th:if="${user != null and user.role.name() == 'BUYER'}">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="becomeSellerModalLabel">Подтверждение перехода</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+
+                <div class="modal-body text-start">
+                    Вы уверены, что хотите стать продавцом? Ваш профиль перейдет в режим продаж.
+                </div>
+
+                <div class="modal-footer">
+                <form th:action="@{/profile/become-seller/{id}(id=${user.id})}" method="post">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-success">Подтвердить</button>
+                </form>
+            </div>
+
+            </div>
         </div>
     </div>
 
