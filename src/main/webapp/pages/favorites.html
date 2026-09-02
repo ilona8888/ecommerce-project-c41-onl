@@ -19,8 +19,20 @@
     <div class="container-fluid">
         <h2 class="mb-3">Избранное</h2>
 
-        <!-- Тут будет сетка с карточками товаров, добавленных в избранное -->
-        <div class="w-100 bg-light p-3" style="min-height: 400px;"></div>
+        <!-- Сетка с карточками товаров, добавленных в избранное -->
+        <div class="w-100 bg-light p-3" style="min-height: 400px;">
+
+            <div th:if="${#lists.isEmpty(productCards)}" class="text-secondary">
+                В избранном пока пусто.
+            </div>
+
+            <div class="row g-4">
+                <div th:each="product : ${productCards}"
+                     class="col-6 col-md-4 col-lg-3">
+                    <div th:replace="~{fragments/product-сard :: productCard(product, '/favorites')}"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 

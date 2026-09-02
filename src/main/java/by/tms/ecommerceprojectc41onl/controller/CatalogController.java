@@ -24,6 +24,7 @@ public class CatalogController {
 
     private final SessionService sessionService;
 
+
     /**
      * Главная страница проекта - каталог товаров.
      * @param model Модель.
@@ -32,7 +33,11 @@ public class CatalogController {
      */
     @GetMapping("/")
     public String home(Model model, HttpSession session) {
+
+        // текущий пользователь нужен, чтобы закрасить сердечки уже добавленных товаров
         User currentUser = sessionService.getCurrentUser(session);
+
+        // карточки товаров с отметкой избранного для текущего пользователя
         List<ProductCardDto> cards = productService.getAllProductCards(currentUser);
         model.addAttribute("productCards", cards);
 

@@ -18,8 +18,14 @@
             Фильтр
         </button>
 
-        <div th:if="${notFoundMessage != null}">
-            <p class="text-danger fs-5" th:text="${notFoundMessage}"></p>
+        <!-- Тут будет сетка с карточками товаров -->
+        <div class="w-100 bg-light p-3" style="min-height: 400px;">
+            <div class="row g-4">
+                <div th:each="product : ${productCards}"
+                     class="col-6 col-md-4 col-lg-3">
+                    <div th:replace="~{fragments/product-сard :: productCard(product, '/')}"></div>
+                </div>
+            </div>
         </div>
 
         <!-- === БЛОК РЕЗУЛЬТАТОВ ПОИСКА === -->
