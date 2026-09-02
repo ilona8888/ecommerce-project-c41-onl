@@ -1,6 +1,5 @@
 package by.tms.ecommerceprojectc41onl.controller;
 
-import by.tms.ecommerceprojectc41onl.dao.PurchaseDao;
 import by.tms.ecommerceprojectc41onl.model.Purchase;
 import by.tms.ecommerceprojectc41onl.model.Review;
 import by.tms.ecommerceprojectc41onl.model.User;
@@ -40,7 +39,6 @@ public class PurchaseController {
         return "redirect:/purchases";
     }
 
-    // TODO : такой метод находится ReviewController(строчка 37), надо доработать, чтобы также выводилась форма оценки товара/написания комментария(опционально – перенести сюда метод и доработать)
     @GetMapping("/purchases")
     public String purchases(Model model, HttpSession session) {
         User user = sessionService.getCurrentUser(session);

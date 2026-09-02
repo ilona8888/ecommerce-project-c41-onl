@@ -39,6 +39,8 @@ public class ProductService {
 
     private final FavouriteDao favouriteDao;
 
+    private final ReviewDao reviewDao;
+
     /**
      * Создание нового товара.
      *
@@ -138,7 +140,7 @@ public class ProductService {
                 : favouriteDao.findFavouriteProductIds(user.getId());
     }
 
-    private ProductCardDto toCard(Product product, Set<Long> favouriteIds) {
+    public ProductCardDto toCard(Product product, Set<Long> favouriteIds) {
 
         Long photoId = productPhotoDao
                 .getPhotoIdByProductId(product.getId())
@@ -150,8 +152,12 @@ public class ProductService {
                 product.getPrice(),
                 product.getDescription(),
                 photoId,
-                0.0,                                    // score — пока нет рейтинга
+                findRatingByProduct(product),
                 favouriteIds.contains(product.getId())  // товар в избранном у текущего пользователя
         );
+    }
+
+    private Double findRatingByProduct(Product product){
+        return reviewDao.getProductRating(product.getId());
     }
 }
