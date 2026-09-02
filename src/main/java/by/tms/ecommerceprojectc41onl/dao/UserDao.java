@@ -29,6 +29,8 @@ public class UserDao {
 
     private static final String FIND_BY_EMAIL_QUERY = "SELECT * FROM USERS WHERE EMAIL=?;";
 
+    private static final String UPDATE_ROLE_QUERY = "UPDATE USERS SET ROLE = ? WHERE ID = ?";
+
     private final DataSource dataSource;
 
     /**
@@ -67,6 +69,7 @@ public class UserDao {
                 UserRole.valueOf(resultSet.getString("ROLE").trim().toUpperCase())
         );
     }
+
     public Optional<User> getById(long id) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BY_ID_QUERY)) {
@@ -96,6 +99,21 @@ public class UserDao {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка при поиске пользователя по email: " + email, e);
+        }
+
+    }
+
+    public void updateRole(long id, UserRole userRole) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROLE_QUERY)) {
+
+            preparedStatement.setString(1, userRole.name());
+            preparedStatement.setLong(2, id);
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка при обновлении роли для пользователя с ID: " + id, e);
         }
     }
 }
