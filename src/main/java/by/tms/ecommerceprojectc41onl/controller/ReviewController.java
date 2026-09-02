@@ -34,14 +34,6 @@ public class ReviewController {
         this.sessionService = sessionService;
     }
 
-    @GetMapping("/purchases")
-    public String purchases(Model model, HttpSession session) {
-        User user = sessionService.getCurrentUser(session);
-        model.addAttribute("purchases",
-                user == null ? List.of() : purchaseDao.findByUser(user));
-        return "purchases";
-    }
-
     @GetMapping("/product")
     public String productDetails(@RequestParam(value = "productId", required = false) Long productId,
                                  Model model) {

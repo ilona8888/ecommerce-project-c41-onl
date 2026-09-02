@@ -19,5 +19,5 @@ public class ProductCardDto {
     private final String description;
     private final Long photoId;
     private final double score;
-    private final boolean favourite;
+    private final boolean favorite;
 }
