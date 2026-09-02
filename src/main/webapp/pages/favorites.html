@@ -29,7 +29,62 @@
             <div class="row g-4">
                 <div th:each="product : ${productCards}"
                      class="col-6 col-md-4 col-lg-3">
-                    <div th:replace="~{fragments/product-сard :: productCard(product, '/favorites')}"></div>
+                    <div class="card w-100" style="max-width: 18rem;">
+                        <a class="text-decoration-none position-relative"
+                           th:href="@{/product-details.html(id=${product.id})}">
+                            <div class="card-body">
+                                <div class="ratio ratio-1x1 mt-2 mb-3 px-2">
+                                    <img class="card-img-top"
+                                         style="object-fit: cover;"
+                                         th:src="${product.photoId != null}
+                                 ? @{/files/{id}(id=${product.photoId})}
+                                 : @{/static/img/icons/no-photo.png}"
+                                         alt="">
+                                </div>
+                            </div>
+                        </a>
+                        <h5 class="card-title mb-3 text-center" th:text="${product.name}"></h5>
+                        <div class="d-flex justify-content-center mb-3">
+                            <ul class="d-flex flex-row align-items-center gap-3 p-0 m-0" style="list-style:none;">
+                                <li class="list-group-item border-0" th:text="${product.price}"></li>
+                                <li class="list-group-item border-0">
+                                    <!-- Товара нет в избранном - показываем пустое сердце и форму добавления -->
+                                    <form th:unless="${product.favorite}" method="post" class="m-0"
+                                          th:action="@{/favorites/add/{id}(id=${product.id})}">
+                                        <button class="btn btn p-0" type="submit" title="Добавить в избранное">
+                                            <img th:src="@{/static/img/icons/heart-love.png}"
+                                                 alt="" width="24" height="24">
+                                        </button>
+                                    </form>
+
+                                    <!-- Товар уже в избранном - красное сердце и форма удаления.
+                                         returnUrl нужен, чтобы вернуть пользователя на ту же страницу -->
+                                    <form th:if="${product.favorite}" method="post" class="m-0"
+                                          th:action="@{/favorites/remove/{id}(id=${product.id})}">
+                                        <input type="hidden" name="returnUrl" th:value="${returnUrl}">
+                                        <button class="btn btn p-0" type="submit" title="Убрать из избранного">
+                                            <img th:src="@{/static/img/icons/heart-red.png}"
+                                                 alt="" width="24" height="24">
+                                        </button>
+                                    </form>
+                                </li>
+                                <li class="list-group-item border-0 d-flex align-items-center gap-1">
+                                    <span th:if="${product.score > 0}" style="color: #ffc107;">★</span>
+                                    <span th:text="${product.score > 0 ? product.score : 'Нет оценок'}"></span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="text-center"
+                             th:if="${user != null and (user.role.name() == 'BUYER' or user.role.name() == 'SELLER')}">
+                            <form th:action="@{/buy/{id}(id=${product.id})}" method="POST">
+                                <button type="submit" onclick=""
+                                        class="btn btn-primary w-100 mb-4"
+                                        style="background-color: var(--brand-blue); max-width: 90%; margin: 0 auto;">
+                                    Купить
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
