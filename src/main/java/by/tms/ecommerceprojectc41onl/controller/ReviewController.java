@@ -1,5 +1,6 @@
 package by.tms.ecommerceprojectc41onl.controller;
 
+import by.tms.ecommerceprojectc41onl.dao.ProductDao;
 import by.tms.ecommerceprojectc41onl.dao.PurchaseDao;
 import by.tms.ecommerceprojectc41onl.dao.ReviewDao;
 import by.tms.ecommerceprojectc41onl.model.Product;
@@ -25,20 +26,30 @@ public class ReviewController {
     private final ReviewDao reviewDao;
     private final PurchaseDao purchaseDao;
     private final SessionService sessionService;
+    private final ProductDao productDao;
 
     public ReviewController(ReviewDao reviewDao,
                             PurchaseDao purchaseDao,
-                            SessionService sessionService) {
+                            SessionService sessionService,
+                            ProductDao productDao) { // добавлен параметр
         this.reviewDao = reviewDao;
         this.purchaseDao = purchaseDao;
         this.sessionService = sessionService;
+        this.productDao = productDao;
     }
 
     @GetMapping("/product")
     public String productDetails(@RequestParam(value = "productId", required = false) Long productId,
                                  Model model) {
-        model.addAttribute("reviews",
-                productId == null ? List.of() : reviewDao.findByProductId(productId));
+        // Изменено: теперь передаём в модель и сам товар
+        if (productId != null) {
+            Product product = productDao.findById(productId);
+            model.addAttribute("product", product);
+            model.addAttribute("reviews", reviewDao.findByProductId(productId));
+        } else {
+            model.addAttribute("product", null);
+            model.addAttribute("reviews", List.of());
+        }
         return "product-details";
     }
 
