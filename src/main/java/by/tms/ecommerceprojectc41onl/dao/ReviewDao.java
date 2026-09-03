@@ -136,7 +136,8 @@ public class ReviewDao {
     }
     // Метод для получения среднего рейтинга товара
     public Double getAverageRatingByProductId(Long productId) {
-        String sql = "SELECT COALESCE(ROUND(AVG(rating)::numeric, 1), 0.0) FROM reviews WHERE product_id = ?";
+        // ИСПРАВЛЕНО: product_id заменено на products_id
+        String sql = "SELECT COALESCE(ROUND(AVG(rating)::numeric, 1), 0.0) FROM reviews WHERE products_id = ?";
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
