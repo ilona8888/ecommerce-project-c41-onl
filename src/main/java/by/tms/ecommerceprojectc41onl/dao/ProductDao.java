@@ -11,7 +11,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * DAO для работы с товарами.
@@ -25,17 +24,20 @@ public class ProductDao {
 
     private static final String INSERT_QUERY = "INSERT INTO PRODUCTS (NAME, DESCRIPTION, PRICE, SELLERS_ID, CATEGORIES_ID) VALUES (?, ?, ?, ?, ?)";
 
-    private static final String FIND_ALL_QUERY = "SELECT * FROM PRODUCTS";
+    // ХАРДКОР: Высчитываем рейтинг на лету для всего каталога
+    private static final String FIND_ALL_QUERY = """
+            SELECT p.ID, p.NAME, p.PRICE, p.DESCRIPTION, p.SELLERS_ID, p.CATEGORIES_ID,
+                   COALESCE(ROUND(AVG(r.RATING)::numeric, 1), 0.0) AS RATING
+            FROM PRODUCTS p
+            LEFT JOIN REVIEWS r ON p.ID = r.PRODUCTS_ID
+            GROUP BY p.ID
+            ORDER BY p.ID DESC
+            """;
 
     private final DataSource dataSource;
 
     /**
      * Создание нового товара.
-     *
-     * @param product  Продукт
-     * @param seller   Продавец
-     * @param category Категория товара
-     * @return Продукт (с заполненным идентификатором).
      */
     public Product create(Product product, Seller seller, Category category) {
         try (Connection connection = dataSource.getConnection();
@@ -54,15 +56,11 @@ public class ProductDao {
                     throw new SQLException("Не удалось получить сгенерированный id.");
                 }
             }
-
             return product;
-
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка сохранения нового товара.", e);
         }
     }
-
-    private final List<Product> productsList = new ArrayList<>();
 
     private Product mapProduct(ResultSet resultSet, String idColumn) throws SQLException {
         Product product = new Product(
@@ -71,17 +69,28 @@ public class ProductDao {
                 resultSet.getBigDecimal("PRICE")
         );
         product.setDescription(resultSet.getString("DESCRIPTION"));
+
+        // Подтягиваем динамический рейтинг из SQL-запроса
+        product.setRating(resultSet.getDouble("RATING"));
+
         return product;
     }
 
-    // TODO : Данный метод должен брать список товаров из БД(так как коллекция productsList(строчка 65) всегда пустая)
     public List<Product> searchProducts(String keyword) {
         if (keyword == null || keyword.isBlank()) {
             return Collections.emptyList();
         }
 
         List<Product> products = new ArrayList<>();
-        String sql = "SELECT * FROM products WHERE LOWER(name) LIKE LOWER(?)";
+        // ХАРДКОР: Рейтинг при поиске
+        String sql = """
+                SELECT p.ID, p.NAME, p.PRICE, p.DESCRIPTION, p.SELLERS_ID, p.CATEGORIES_ID,
+                       COALESCE(ROUND(AVG(r.RATING)::numeric, 1), 0.0) AS RATING
+                FROM PRODUCTS p
+                LEFT JOIN REVIEWS r ON p.ID = r.PRODUCTS_ID
+                WHERE LOWER(p.NAME) LIKE LOWER(?)
+                GROUP BY p.ID
+                """;
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -102,20 +111,22 @@ public class ProductDao {
     }
 
     public Product findById(Long id) {
-        String sql = "SELECT * FROM products WHERE id = ?";
+        String sql = """
+                SELECT p.ID, p.NAME, p.PRICE, p.DESCRIPTION, p.SELLERS_ID, p.CATEGORIES_ID,
+                       COALESCE(ROUND(AVG(r.RATING)::numeric, 1), 0.0) AS RATING
+                FROM PRODUCTS p
+                LEFT JOIN REVIEWS r ON p.ID = r.PRODUCTS_ID
+                WHERE p.ID = ?
+                GROUP BY p.ID
+                """;
+
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setLong(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    Product product = new Product();
-                    product.setId(resultSet.getLong("id"));
-                    product.setName(resultSet.getString("name"));
-                    product.setPrice(resultSet.getBigDecimal("price"));
-                    product.setDescription(resultSet.getString("description"));
-
-                    return product;
+                    return mapProduct(resultSet, "ID"); // Используем общий метод маппинга
                 }
             }
         } catch (SQLException e) {
@@ -125,45 +136,20 @@ public class ProductDao {
     }
 
     public List<Product> getAll() {
-
         List<Product> products = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_QUERY);
              ResultSet resultSet = preparedStatement.executeQuery()) {
-            {
 
-                while (resultSet.next()) {
-                    Product product = new Product();
-                    product.setId(resultSet.getLong("id"));
-                    product.setName(resultSet.getString("name"));
-                    product.setPrice(resultSet.getBigDecimal("price"));
-                    product.setDescription(resultSet.getString("description"));
-
-                    products.add(product);
-                }
-
+            while (resultSet.next()) {
+                Product product = mapProduct(resultSet, "ID"); // Используем общий метод маппинга
+                products.add(product);
             }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return products;
     }
-    // Метод для сохранения нового рейтинга в таблицу products
-    public void updateProductRating(Long productId, Double newRating) {
-        String sql = "UPDATE products SET rating = ? WHERE id = ?";
-
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-            preparedStatement.setDouble(1, newRating);
-            preparedStatement.setLong(2, productId);
-
-            preparedStatement.executeUpdate(); // Выполняем запрос на обновление
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Ошибка при обновлении рейтинга товара", e);
-        }
-    }
 }
-

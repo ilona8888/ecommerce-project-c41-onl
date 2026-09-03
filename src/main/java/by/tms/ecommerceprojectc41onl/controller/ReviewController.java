@@ -66,9 +66,6 @@ public class ReviewController {
         review.setProduct(product);
         reviewDao.addReview(review);
 
-        // 2. ПЕРЕСЧЕТ РЕЙТИНГА ТОВАРА
-        Double newAverageRating = reviewDao.getAverageRatingByProductId(productId);
-        productDao.updateProductRating(productId, newAverageRating);
 
         redirectAttributes.addFlashAttribute("reviewSuccess", "Оценка сохранена, рейтинг товара обновлен.");
         return "redirect:/purchases";

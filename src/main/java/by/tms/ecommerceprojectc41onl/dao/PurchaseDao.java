@@ -15,27 +15,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Read-only DAO methods required by the review flow.
- */
 @Repository
 @RequiredArgsConstructor
 public class PurchaseDao {
 
+    // ХАРДКОР: Считаем средний рейтинг на лету через LEFT JOIN и GROUP BY
     private static final String SELECT_BY_USER_QUERY = """
             SELECT pu.ID, pu.COST, pu.PURCHASE_DATE,
-                   p.ID AS PRODUCT_ID, p.NAME, p.PRICE, p.DESCRIPTION, p.RATING
+                   p.ID AS PRODUCT_ID, p.NAME, p.PRICE, p.DESCRIPTION,
+                   COALESCE(ROUND(AVG(r.RATING)::numeric, 1), 0.0) AS RATING
             FROM PURCHASES pu
             JOIN PRODUCTS p ON p.ID = pu.PRODUCTS_ID
+            LEFT JOIN REVIEWS r ON p.ID = r.PRODUCTS_ID
             WHERE pu.USERS_ID = ?
+            GROUP BY pu.ID, pu.COST, pu.PURCHASE_DATE, p.ID, p.NAME, p.PRICE, p.DESCRIPTION
             ORDER BY pu.PURCHASE_DATE DESC
             """;
 
+    // Здесь тоже считаем рейтинг на лету
     private static final String SELECT_PURCHASED_PRODUCT_QUERY = """
-            SELECT p.ID, p.NAME, p.PRICE, p.DESCRIPTION, p.RATING
+            SELECT p.ID, p.NAME, p.PRICE, p.DESCRIPTION,
+                   COALESCE(ROUND(AVG(r.RATING)::numeric, 1), 0.0) AS RATING
             FROM PURCHASES pu
             JOIN PRODUCTS p ON p.ID = pu.PRODUCTS_ID
+            LEFT JOIN REVIEWS r ON p.ID = r.PRODUCTS_ID
             WHERE pu.USERS_ID = ? AND pu.PRODUCTS_ID = ?
+            GROUP BY p.ID, p.NAME, p.PRICE, p.DESCRIPTION
             LIMIT 1
             """;
 
@@ -86,6 +91,7 @@ public class PurchaseDao {
         );
         product.setDescription(resultSet.getString("DESCRIPTION"));
 
+        // Маппим наш динамически высчитанный рейтинг
         product.setRating(resultSet.getDouble("RATING"));
 
         return product;
@@ -99,7 +105,6 @@ public class PurchaseDao {
             statement.setLong(1, purchase.getUser().getId());
             statement.setLong(2, purchase.getProduct().getId());
             statement.setBigDecimal(3, purchase.getCost());
-            // Конвертируем LocalDateTime в Timestamp для базы данных
             statement.setTimestamp(4, java.sql.Timestamp.valueOf(purchase.getPurchaseDate()));
 
             statement.executeUpdate();
