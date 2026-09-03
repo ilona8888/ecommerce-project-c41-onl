@@ -1,5 +1,6 @@
 package by.tms.ecommerceprojectc41onl.controller;
 
+import by.tms.ecommerceprojectc41onl.dao.ProductDao;
 import by.tms.ecommerceprojectc41onl.dao.PurchaseDao;
 import by.tms.ecommerceprojectc41onl.dao.ReviewDao;
 import by.tms.ecommerceprojectc41onl.model.Product;
@@ -8,6 +9,7 @@ import by.tms.ecommerceprojectc41onl.model.User;
 import by.tms.ecommerceprojectc41onl.services.SessionService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,19 +22,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class ReviewController {
 
     private final ReviewDao reviewDao;
     private final PurchaseDao purchaseDao;
+    private final ProductDao productDao; // Добавили поле
     private final SessionService sessionService;
-
-    public ReviewController(ReviewDao reviewDao,
-                            PurchaseDao purchaseDao,
-                            SessionService sessionService) {
-        this.reviewDao = reviewDao;
-        this.purchaseDao = purchaseDao;
-        this.sessionService = sessionService;
-    }
 
     @GetMapping("/product")
     public String productDetails(@RequestParam(value = "productId", required = false) Long productId,
@@ -48,22 +44,33 @@ public class ReviewController {
                             @RequestParam("productId") Long productId,
                             RedirectAttributes redirectAttributes,
                             HttpSession session) {
+
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("reviewError", "Выберите оценку от 1 до 5.");
             return "redirect:/purchases";
         }
 
         User user = sessionService.getCurrentUser(session);
+        if (user == null) {
+            return "redirect:/login";
+        }
+
         Product product = findPurchasedProduct(user, productId);
-        if (user == null || product == null) {
+        if (product == null) {
             redirectAttributes.addFlashAttribute("reviewError", "Купленный товар не найден.");
             return "redirect:/purchases";
         }
 
+        // 1. Сохраняем новую оценку
         review.setUser(user);
         review.setProduct(product);
         reviewDao.addReview(review);
-        redirectAttributes.addFlashAttribute("reviewSuccess", "Оценка сохранена.");
+
+        // 2. ПЕРЕСЧЕТ РЕЙТИНГА ТОВАРА
+        Double newAverageRating = reviewDao.getAverageRatingByProductId(productId);
+        productDao.updateProductRating(productId, newAverageRating);
+
+        redirectAttributes.addFlashAttribute("reviewSuccess", "Оценка сохранена, рейтинг товара обновлен.");
         return "redirect:/purchases";
     }
 

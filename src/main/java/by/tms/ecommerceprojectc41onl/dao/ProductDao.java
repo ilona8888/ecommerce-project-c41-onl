@@ -149,5 +149,21 @@ public class ProductDao {
         }
         return products;
     }
+    // Метод для сохранения нового рейтинга в таблицу products
+    public void updateProductRating(Long productId, Double newRating) {
+        String sql = "UPDATE products SET rating = ? WHERE id = ?";
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setDouble(1, newRating);
+            preparedStatement.setLong(2, productId);
+
+            preparedStatement.executeUpdate(); // Выполняем запрос на обновление
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка при обновлении рейтинга товара", e);
+        }
+    }
 }
 

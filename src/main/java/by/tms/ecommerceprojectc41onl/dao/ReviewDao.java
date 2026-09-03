@@ -134,4 +134,24 @@ public class ReviewDao {
             throw new RuntimeException("Ошибка расчёта средней оценки", error);
         }
     }
+    // Метод для получения среднего рейтинга товара
+    public Double getAverageRatingByProductId(Long productId) {
+        String sql = "SELECT COALESCE(ROUND(AVG(rating)::numeric, 1), 0.0) FROM reviews WHERE product_id = ?";
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setLong(1, productId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getDouble(1); // Получаем результат из первой колонки
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка при расчете средней оценки товара", e);
+        }
+
+        return 0.0;
+    }
 }

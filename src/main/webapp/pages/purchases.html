@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Покупки</title>
+    <title>Мои покупки</title>
 
-    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <!-- Собственные стили -->
     <link rel="stylesheet" th:href="@{/static/css/style.css}">
 </head>
 <body>
@@ -19,76 +17,104 @@
 
         <h2 class="mb-3">Покупки</h2>
 
-        <!-- Если список пуст (показываем большой серый блок с сообщением) -->
         <div th:if="${#lists.isEmpty(purchases)}" class="w-100 bg-light p-4 rounded d-flex justify-content-center align-items-center" style="min-height: 400px;">
             <p class="fs-4 text-muted">У вас пока нет покупок</p>
         </div>
 
-        <!-- Если список НЕ пуст (показываем наши карточки без лишних форм сверху) -->
-        <div th:unless="${#lists.isEmpty(purchases)}" class="mt-4">
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                <div class="col" th:each="purchase : ${purchases}">
-                    <div class="card h-100 shadow-sm p-3">
-                        <div class="card-body p-0 d-flex flex-column">
+        <div th:unless="${#lists.isEmpty(purchases)}" class="w-100 bg-light p-3" style="min-height: 400px;">
+            <div class="row g-4">
 
-                            <!-- Верхняя часть карточки (стиль как в каталоге) -->
-                            <div class="mb-3">
-                                <h5 class="card-title text-center mb-3" th:text="${purchase.product.name}">Название</h5>
+                <div th:each="purchase : ${purchases}" class="col-6 col-md-4 col-lg-3">
+                    <div class="card w-100 h-100 d-flex flex-column shadow-sm" style="max-width: 18rem;">
 
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <!-- Цена -->
-                                    <span class="fs-6" th:text="${purchase.product.price} + ' руб.'">1.00 руб.</span>
-
-                                    <!-- Иконка избранного -->
-                                    <button class="btn p-0 text-dark" type="button">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                                    </button>
-
-                                    <!-- Рейтинг -->
-                                    <span class="text-muted small">0.0</span>
-
-                                    <!-- Кнопка купить -->
-                                    <button class="btn btn-info text-white btn-sm px-3">Купить</button>
+                        <!-- 1. Изображение товара -->
+                        <a class="text-decoration-none position-relative"
+                           th:href="@{/product/{id}(id=${purchase.product.id})}">
+                            <div class="card-body pb-0">
+                                <div class="ratio ratio-1x1 mt-2 mb-3 px-2">
+                                    <img class="card-img-top rounded"
+                                         style="object-fit: cover;"
+                                         th:src="@{/static/img/icons/no-photo.png}"
+                                         th:alt="${purchase.product.name}">
                                 </div>
                             </div>
+                        </a>
 
-                            <!-- Информация о дате покупки -->
-                            <div class="text-muted text-center small mb-3">
-                                Куплено: <span th:text="${#temporals.format(purchase.purchaseDate, 'dd.MM.yyyy HH:mm')}">Дата</span>
-                            </div>
+                        <!-- 2. Название -->
+                        <h5 class="card-title mb-3 text-center px-2" th:text="${purchase.product.name}"></h5>
 
-                            <!-- Компактная форма отзыва -->
-                            <div class="mt-auto border-top pt-3">
+                        <!-- 3. Цена, Избранное и Рейтинг -->
+                        <div class="d-flex justify-content-center mb-3">
+                            <ul class="d-flex flex-row align-items-center gap-3 p-0 m-0" style="list-style:none;">
+                                <li class="list-group-item border-0" th:text="${purchase.product.price} + ' руб.'"></li>
 
-                                <!-- 1. Форма для выставления оценки (звёзды) -->
-                                <form th:action="@{/reviews}" method="POST" class="mb-2">
-                                    <input type="hidden" name="productId" th:value="${purchase.product.id}" />
+                                <!-- Кнопка избранного -->
+                                <li class="list-group-item border-0">
+                                    <form method="post" class="m-0"
+                                          th:action="@{/favorites/add/{id}(id=${purchase.product.id})}">
+                                        <input type="hidden" name="returnUrl" value="/purchases">
+                                        <button class="btn p-0" type="submit" title="Добавить в избранное">
+                                            <img th:src="@{/static/img/icons/heart-love.png}" alt="" width="24" height="24">
+                                        </button>
+                                    </form>
+                                </li>
 
-                                    <div class="d-flex align-items-center justify-content-between mb-2">
-                                        <span class="text-muted small">Оцените товар:</span>
-                                        <div class="text-warning">
-                                            <!-- Теперь это кнопки type="submit". Клик по звезде = отправка оценки -->
-                                            <button type="submit" name="score" value="1" class="btn btn-sm btn-outline-warning p-1">★</button>
-                                            <button type="submit" name="score" value="2" class="btn btn-sm btn-outline-warning p-1">★</button>
-                                            <button type="submit" name="score" value="3" class="btn btn-sm btn-outline-warning p-1">★</button>
-                                            <button type="submit" name="score" value="4" class="btn btn-sm btn-outline-warning p-1">★</button>
-                                            <button type="submit" name="score" value="5" class="btn btn-sm btn-outline-warning p-1">★</button>
-                                        </div>
-                                    </div>
-                                </form>
-
-                                <!-- 2. Форма для текста комментария -->
-                                <form th:action="@{/reviews/comment}" method="post">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <input type="hidden" name="productId" th:value="${purchase.product.id}">
-                                        <input type="text" name="comment" class="form-control me-2 form-control-sm" placeholder="Написать комментарий..." required>
-                                        <button type="submit" class="btn btn-primary btn-sm">Отправить</button>
-                                    </div>
-                                </form>
-                            </div>
+                                <!-- Реальный рейтинг товара -->
+                                <li class="list-group-item border-0 d-flex align-items-center gap-1">
+                                    <span style="color: #ffc107;">★</span>
+                                    <span class="text-muted small" th:text="${purchase.product.rating != null ? purchase.product.rating : '0.0'}">0.0</span>
+                                </li>
+                            </ul>
                         </div>
+
+                        <!-- 4. Кнопка Купить снова -->
+                        <div class="text-center mb-2">
+                            <form th:action="@{/buy/{id}(id=${purchase.product.id})}" method="POST">
+                                <button type="submit"
+                                        class="btn btn-primary w-100"
+                                        style="background-color: var(--brand-blue); max-width: 90%; margin: 0 auto;">
+                                    Купить снова
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- 5. Дата покупки -->
+                        <div class="text-muted text-center" style="font-size: 0.75rem; margin-bottom: 10px;">
+                            Куплено: <span th:text="${#temporals.format(purchase.purchaseDate, 'dd.MM.yyyy HH:mm')}"></span>
+                        </div>
+
+                        <!-- 6. Формы отзыва и рейтинга -->
+                        <div class="mt-auto border-top pt-2 pb-2 px-3" style="background-color: #fcfcfc; border-bottom-left-radius: var(--bs-card-inner-border-radius); border-bottom-right-radius: var(--bs-card-inner-border-radius);">
+
+                            <!-- Форма выбора звезд (привязана к объекту review из модели) -->
+                            <form th:action="@{/reviews}" method="POST" th:object="${review}" class="mb-2">
+                                <input type="hidden" name="productId" th:value="${purchase.product.id}" />
+                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                    <span class="text-muted" style="font-size: 0.8rem;">Моя оценка:</span>
+                                    <div class="text-warning">
+                                        <button type="submit" name="rating" value="1" class="btn btn-sm btn-link text-warning p-0 text-decoration-none fs-5">★</button>
+                                        <button type="submit" name="rating" value="2" class="btn btn-sm btn-link text-warning p-0 text-decoration-none fs-5">★</button>
+                                        <button type="submit" name="rating" value="3" class="btn btn-sm btn-link text-warning p-0 text-decoration-none fs-5">★</button>
+                                        <button type="submit" name="rating" value="4" class="btn btn-sm btn-link text-warning p-0 text-decoration-none fs-5">★</button>
+                                        <button type="submit" name="rating" value="5" class="btn btn-sm btn-link text-warning p-0 text-decoration-none fs-5">★</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <!-- Форма ввода комментария -->
+                            <form th:action="@{/reviews/comment}" method="post">
+                                <input type="hidden" name="productId" th:value="${purchase.product.id}">
+                                <div class="input-group input-group-sm">
+                                    <input type="text" name="comment" class="form-control" placeholder="Написать отзыв..." required>
+                                    <button type="submit" class="btn btn-outline-secondary">OK</button>
+                                </div>
+                            </form>
+
+                        </div>
+
                     </div>
                 </div>
+
             </div>
         </div>
 
