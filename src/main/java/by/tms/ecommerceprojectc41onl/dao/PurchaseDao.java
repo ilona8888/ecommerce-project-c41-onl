@@ -24,7 +24,7 @@ public class PurchaseDao {
 
     private static final String SELECT_BY_USER_QUERY = """
             SELECT pu.ID, pu.COST, pu.PURCHASE_DATE,
-                   p.ID AS PRODUCT_ID, p.NAME, p.PRICE, p.DESCRIPTION
+                   p.ID AS PRODUCT_ID, p.NAME, p.PRICE, p.DESCRIPTION, p.RATING
             FROM PURCHASES pu
             JOIN PRODUCTS p ON p.ID = pu.PRODUCTS_ID
             WHERE pu.USERS_ID = ?
@@ -32,7 +32,7 @@ public class PurchaseDao {
             """;
 
     private static final String SELECT_PURCHASED_PRODUCT_QUERY = """
-            SELECT p.ID, p.NAME, p.PRICE, p.DESCRIPTION
+            SELECT p.ID, p.NAME, p.PRICE, p.DESCRIPTION, p.RATING
             FROM PURCHASES pu
             JOIN PRODUCTS p ON p.ID = pu.PRODUCTS_ID
             WHERE pu.USERS_ID = ? AND pu.PRODUCTS_ID = ?
@@ -85,6 +85,9 @@ public class PurchaseDao {
                 resultSet.getBigDecimal("PRICE")
         );
         product.setDescription(resultSet.getString("DESCRIPTION"));
+
+        product.setRating(resultSet.getDouble("RATING"));
+
         return product;
     }
 
