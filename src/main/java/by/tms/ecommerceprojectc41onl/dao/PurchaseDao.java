@@ -23,22 +23,26 @@ public class PurchaseDao {
     private static final String SELECT_BY_USER_QUERY = """
             SELECT pu.ID, pu.COST, pu.PURCHASE_DATE,
                    p.ID AS PRODUCT_ID, p.NAME, p.PRICE, p.DESCRIPTION,
-                   COALESCE(ROUND(AVG(r.RATING)::numeric, 1), 0.0) AS RATING
+                   COALESCE(ROUND(AVG(r.RATING)::numeric, 1), 0.0) AS RATING,
+                   MAX(pp.FILE_ID) AS IMAGE_ID
             FROM PURCHASES pu
             JOIN PRODUCTS p ON p.ID = pu.PRODUCTS_ID
             LEFT JOIN REVIEWS r ON p.ID = r.PRODUCTS_ID
+            LEFT JOIN PRODUCT_PHOTOS pp ON p.ID = pp.PRODUCTS_ID
             WHERE pu.USERS_ID = ?
             GROUP BY pu.ID, pu.COST, pu.PURCHASE_DATE, p.ID, p.NAME, p.PRICE, p.DESCRIPTION
             ORDER BY pu.PURCHASE_DATE DESC
             """;
 
-    // Здесь тоже считаем рейтинг на лету
+    // 2. Обновленный запрос одной покупки
     private static final String SELECT_PURCHASED_PRODUCT_QUERY = """
             SELECT p.ID, p.NAME, p.PRICE, p.DESCRIPTION,
-                   COALESCE(ROUND(AVG(r.RATING)::numeric, 1), 0.0) AS RATING
+                   COALESCE(ROUND(AVG(r.RATING)::numeric, 1), 0.0) AS RATING,
+                   MAX(pp.FILE_ID) AS IMAGE_ID
             FROM PURCHASES pu
             JOIN PRODUCTS p ON p.ID = pu.PRODUCTS_ID
             LEFT JOIN REVIEWS r ON p.ID = r.PRODUCTS_ID
+            LEFT JOIN PRODUCT_PHOTOS pp ON p.ID = pp.PRODUCTS_ID
             WHERE pu.USERS_ID = ? AND pu.PRODUCTS_ID = ?
             GROUP BY p.ID, p.NAME, p.PRICE, p.DESCRIPTION
             LIMIT 1
@@ -90,9 +94,13 @@ public class PurchaseDao {
                 resultSet.getBigDecimal("PRICE")
         );
         product.setDescription(resultSet.getString("DESCRIPTION"));
-
-        // Маппим наш динамически высчитанный рейтинг
         product.setRating(resultSet.getDouble("RATING"));
+
+        // Подтягиваем ID картинки (если есть)
+        long imageId = resultSet.getLong("IMAGE_ID");
+        if (!resultSet.wasNull()) {
+            product.setImageId(imageId);
+        }
 
         return product;
     }

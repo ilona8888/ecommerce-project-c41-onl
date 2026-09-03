@@ -12,7 +12,7 @@ public class Product {
     private String name;
     private BigDecimal price;
     private String description;
-
+    private Long imageId;
     private Double rating;
 
     public Product(Long id, String name, BigDecimal price) {
