@@ -31,6 +31,8 @@ public class UserDao {
 
     private static final String UPDATE_ROLE_QUERY = "UPDATE USERS SET ROLE = ? WHERE ID = ?";
 
+    private static final String DELETE_BY_ID = "DELETE FROM USERS WHERE ID = ?";
+
     private final DataSource dataSource;
 
     /**
@@ -114,6 +116,18 @@ public class UserDao {
 
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка при обновлении роли для пользователя с ID: " + id, e);
+        }
+    }
+
+    public void delete(User user) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_BY_ID)) {
+
+            preparedStatement.setLong(1, user.getId());
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка удаления пользователя с ID: " + user.getId(), e);
         }
     }
 }
