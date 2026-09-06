@@ -3,6 +3,7 @@ package by.tms.ecommerceprojectc41onl.controller;
 import by.tms.ecommerceprojectc41onl.model.Purchase;
 import by.tms.ecommerceprojectc41onl.model.Review;
 import by.tms.ecommerceprojectc41onl.model.User;
+import by.tms.ecommerceprojectc41onl.services.ProductService;
 import by.tms.ecommerceprojectc41onl.services.PurchaseService;
 import by.tms.ecommerceprojectc41onl.services.SessionService;
 import jakarta.servlet.http.HttpSession;
@@ -18,11 +19,15 @@ import java.util.List;
 public class PurchaseController {
 
     private final PurchaseService purchaseService;
+    private final ProductService productService;
     private final SessionService sessionService;
 
 
-    public PurchaseController(PurchaseService purchaseService, SessionService sessionService) {
+    public PurchaseController(PurchaseService purchaseService,
+                              ProductService productService,
+                              SessionService sessionService) {
         this.purchaseService = purchaseService;
+        this.productService = productService;
         this.sessionService = sessionService;
     }
 
@@ -46,6 +51,10 @@ public class PurchaseController {
         List<Purchase> purchasesList = (user == null) ? List.of() : purchaseService.getCurrentUserPurchases(user);
 
         model.addAttribute("purchases", purchasesList);
+        model.addAttribute("purchaseProductCards", productService.getProductCardsById(
+                purchasesList.stream().map(Purchase::getProduct).toList(),
+                user
+        ));
         model.addAttribute("review", new Review());
 
         return "purchases";
