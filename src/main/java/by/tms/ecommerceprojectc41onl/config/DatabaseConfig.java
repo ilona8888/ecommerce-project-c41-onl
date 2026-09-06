@@ -33,6 +33,7 @@ public class DatabaseConfig {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
+
     @Bean
     public DataSource dataSource() {
         HikariConfig config = new HikariConfig();
@@ -45,8 +46,12 @@ public class DatabaseConfig {
         return new HikariDataSource(config);
     }
 
-    @Bean(initMethod = "migrate")  //Автоматический запуск миграции
+    @Bean(initMethod = "migrate")
     public Flyway flyway(DataSource dataSource) {
-        return Flyway.configure().dataSource(dataSource).load();
+        return Flyway.configure()
+                .dataSource(dataSource)
+                .baselineOnMigrate(true) // <--- Добавьте эту строчку
+                .load();
     }
+
 }

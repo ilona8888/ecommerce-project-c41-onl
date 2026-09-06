@@ -1,7 +1,3 @@
-/*TODO : доработать SQL-скрипт – добавить админа*/
-/* Включаем pgcrypto */
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
 /*Добавить покупателя*/
     INSERT INTO USERS (USER_NAME,
                    EMAIL,
@@ -11,13 +7,13 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
                    LAST_NAME,
                    BIRTHDAY,
                    ROLE)
-VALUES ('buyer1',
-        'buyer@gmail.com1',
+VALUES ('buyer',
+        'buyer@gmail.com',
         1234,
         true,
         'Elon',
         'Musk',
-        DATE '1971-06-28',
+        DATE '1971-06-11',
         'buyer');
 
 /*Добавить продавца*/

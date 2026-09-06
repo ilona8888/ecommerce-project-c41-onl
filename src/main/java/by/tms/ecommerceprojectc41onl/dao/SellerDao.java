@@ -23,6 +23,7 @@ public class SellerDao {
 
     private static final String UPDATE_DETAILS_BY_ID_QUERY = "UPDATE SELLERS SET details = ? WHERE users_id = ?";
     private static final String UPDATE_CONTACT_INFO_BY_ID_QUERY = "UPDATE SELLERS SET contact_info = ? WHERE users_id = ?";
+    private static final String INSERT_SELLER_QUERY = "INSERT INTO SELLERS (users_id, details, contact_info) VALUES (?, ?, ?)";
 
     private final DataSource dataSource;
 
@@ -148,6 +149,19 @@ public class SellerDao {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка поиска продавца", e);
+        }
+    }
+    public void createSeller(long userId) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SELLER_QUERY)) {
+
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setString(2, "");
+            preparedStatement.setString(3, "");
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка создания профиля продавца", e);
         }
     }
 }
