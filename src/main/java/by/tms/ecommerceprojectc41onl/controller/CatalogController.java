@@ -10,8 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam; // Не забудь импорт!
-
+import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 /**
@@ -34,10 +33,10 @@ public class CatalogController {
             Model model,
             HttpSession session
     ) {
-        // 1. Получаем текущего пользователя (вот зачем он был нужен!)
+        // Получаем текущего пользователя
         User currentUser = sessionService.getCurrentUser(session);
 
-        // 2. Получаем карточки (если есть фильтр — передаем и список ID, и текущего пользователя)
+        // Получаем карточки
         List<ProductCardDto> cards;
         if (categoryIds != null && !categoryIds.isEmpty()) {
             cards = productService.getProductsByCategories(categoryIds, currentUser);
@@ -46,7 +45,7 @@ public class CatalogController {
         }
         model.addAttribute("productCards", cards);
 
-        // 3. Передаем категории для меню и фильтра
+        // Передаем категории для меню и фильтра
         model.addAttribute("allCategories", categoryService.findAllCategories());
 
         return "index";
