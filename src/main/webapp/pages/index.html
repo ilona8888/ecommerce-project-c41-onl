@@ -18,12 +18,13 @@
             Фильтр
         </button>
 
-        <!-- Тут будет сетка с карточками товаров -->
         <div class="w-100 bg-light p-3" style="min-height: 400px;">
             <div class="row g-4">
                 <div th:each="product : ${productCards}"
                      class="col-6 col-md-4 col-lg-3">
-                    <div th:replace="~{fragments/product-сard :: productCard(product, '/')}"></div>
+                    <a th:href="@{/product?productId={id}(id=${product.id})}" class="text-decoration-none text-reset">
+                        <div th:replace="~{fragments/product-сard :: productCard(product, '/')}"></div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -34,7 +35,9 @@
             <div class="w-100 bg-light p-3" style="min-height: 400px;">
                 <div class="row g-4">
                     <div th:each="product : ${products}" class="col-6 col-md-4 col-lg-3">
-                        <div th:replace="~{fragments/product-сard :: productCard(${product})}"></div>
+                        <a th:href="@{/product?productId={id}(id=${product.id})}" class="text-decoration-none text-reset">
+                            <div th:replace="~{fragments/product-сard :: productCard(${product})}"></div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -45,7 +48,9 @@
             <div class="w-100 bg-light p-3" style="min-height: 400px;">
                 <div class="row g-4">
                     <div th:each="product : ${productCards}" class="col-6 col-md-4 col-lg-3">
-                        <div th:replace="~{fragments/product-сard :: productCard(${product})}"></div>
+                        <a th:href="@{/product?productId={id}(id=${product.id})}" class="text-decoration-none text-reset">
+                            <div th:replace="~{fragments/product-сard :: productCard(${product})}"></div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -68,34 +73,20 @@
                 }
                 event.preventDefault();
                 event.stopPropagation();
-                // Define your query parameters
                 const params = {
                     'product-id': btn.dataset.id,
                     flag: !(btn.dataset.favorite === 'true'),
-
                 };
-
-                // Convert the object to a query string: ?search=javascript&limit=10&page=1
                 const queryString = new URLSearchParams(params).toString();
-
                 try {
-                    const response = await fetch(`/favorite?${queryString}`,
-                        {
-                            method: 'POST',
-                            redirect: 'follow'
-                        }
-                    )
-
-                    // // HTTP 301 response
-                    // // HOW CAN I FOLLOW THE HTTP REDIRECT RESPONSE?
+                    const response = await fetch(`/favorite?${queryString}`, { method: 'POST', redirect: 'follow' });
                     if (response.redirected) {
                         window.location.href = response.url;
                     }
                 } catch (error) {
                     console.error('Fetch failed:', error);
                 }
-
-            })
+            });
         }
     });
 </script>
