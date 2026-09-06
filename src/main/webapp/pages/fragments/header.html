@@ -124,20 +124,22 @@
         </nav>
     </header>
 
-    <!-- Каталог Offcanvas -->
-    <div class="offcanvas offcanvas-start offcanvas-catalog" tabindex="-1" id="catalogOffcanvas">
+    <!-- Каталог Offcanvas (Бургер-меню) -->
+    <div class="offcanvas offcanvas-start offcanvas-catalog" tabindex="-1" id="catalogOffcanvas" aria-labelledby="catalogOffcanvasLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title">Каталог товаров</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+            <h5 class="offcanvas-title" id="catalogOffcanvasLabel">Каталог товаров</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
         </div>
 
         <div class="offcanvas-body">
-            <ul class="list-group">
-                <li class="list-group-item"
-                    th:each="cat : ${categories}"
-                    th:text="${cat.name}">
-                </li>
-            </ul>
+            <div class="list-group w-100">
+                <a th:each="cat : ${allCategories}"
+                   th:href="@{/(categoryId=${cat.id})}"
+                   class="list-group-item list-group-item-action border-0 mb-1 rounded"
+                   th:text="${cat.name}">
+                    Категория
+                </a>
+            </div>
         </div>
     </div>
 

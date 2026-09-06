@@ -30,23 +30,23 @@ public class CatalogController {
      */
     @GetMapping("/")
     public String home(
-            @RequestParam(required = false, name = "categoryId") Long categoryId,
+            @RequestParam(required = false, name = "categoryId") List<Long> categoryIds,
             Model model,
             HttpSession session
     ) {
-        // Текущий пользователь для сердечек избранного
+        // 1. Получаем текущего пользователя (вот зачем он был нужен!)
         User currentUser = sessionService.getCurrentUser(session);
 
-        // Карточки товаров: если передан categoryId — фильтруем, иначе показываем все
+        // 2. Получаем карточки (если есть фильтр — передаем и список ID, и текущего пользователя)
         List<ProductCardDto> cards;
-        if (categoryId != null) {
-            cards = productService.getProductsByCategories(List.of(categoryId));
+        if (categoryIds != null && !categoryIds.isEmpty()) {
+            cards = productService.getProductsByCategories(categoryIds, currentUser);
         } else {
             cards = productService.getAllProductCards(currentUser);
         }
         model.addAttribute("productCards", cards);
 
-        // Передаем список категорий для выпадающего меню фильтра
+        // 3. Передаем категории для меню и фильтра
         model.addAttribute("allCategories", categoryService.findAllCategories());
 
         return "index";

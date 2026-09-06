@@ -162,10 +162,12 @@ public class ProductService {
     }
 
     // Метод для фильтрации
-    public List<ProductCardDto> getProductsByCategories(List<Long> categoryIds) {
+    public List<ProductCardDto> getProductsByCategories(List<Long> categoryIds, @Nullable User user) {
+        Set<Long> favouriteIds = getFavouriteIds(user);
+
         return productDao.getByCategories(categoryIds)
                 .stream()
-                .map(this::mapToProductCardDto)
+                .map(product -> toCard(product, favouriteIds))
                 .toList();
     }
 

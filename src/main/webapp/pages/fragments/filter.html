@@ -2,23 +2,28 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<!-- Выпадающее окно: каталог товаров / категории -->
+<!-- Выпадающее окно: каталог товаров / категории с чекбоксами -->
 <div class="offcanvas offcanvas-end offcanvas-filter" tabindex="-1"
      id="filterOffcanvas" aria-labelledby="filterOffcanvasLabel" th:fragment="filterPanel">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="filterOffcanvasLabel">Каталог товаров</h5>
+        <h5 class="offcanvas-title" id="filterOffcanvasLabel">Фильтр по категориям</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
     </div>
 
     <div class="offcanvas-body d-flex flex-column p-3">
-        <div class="list-group w-100">
-            <a th:each="category : ${allCategories}"
-               th:href="@{/(categoryId=${category.id})}"
-               class="list-group-item list-group-item-action border-0 mb-1 rounded"
-               th:text="${category.name}">
-                Название категории
-            </a>
-        </div>
+        <form method="get" th:action="@{/}">
+            <div class="mb-3">
+                <div th:each="category : ${allCategories}" class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" name="categoryId"
+                           th:value="${category.id}"
+                           th:id="${'cat-' + category.id}">
+                    <label class="form-check-label" th:for="${'cat-' + category.id}" th:text="${category.name}">
+                        Название категории
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" style="background-color: var(--brand-blue);">Применить фильтр</button>
+        </form>
     </div>
 </div>
 
