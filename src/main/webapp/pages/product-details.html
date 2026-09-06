@@ -15,6 +15,7 @@
     <div class="container-fluid">
         <div class="row g-4">
 
+            <!-- Левая колонка: фото -->
             <div class="col-12 col-lg-5">
                 <div class="w-100 bg-light p-3 d-flex align-items-center justify-content-center" style="min-height: 420px;">
                     <img th:if="${product != null and product.photoId != null}"
@@ -28,6 +29,7 @@
                 </div>
             </div>
 
+            <!-- Правая колонка: информация -->
             <div class="col-12 col-lg-7">
                 <div class="w-100 bg-white p-4" style="min-height: 420px;">
                     <h1 th:text="${product != null ? product.name : 'Товар не найден'}">Название</h1>
@@ -42,6 +44,7 @@
             </div>
         </div>
 
+        <!-- Отзывы -->
         <div class="w-100 bg-light p-3 mt-4" style="min-height: 160px;">
             <h4 class="mb-3">Отзывы</h4>
             <p th:if="${reviews == null or #lists.isEmpty(reviews)}" class="text-muted mb-0">Отзывов пока нет.</p>
