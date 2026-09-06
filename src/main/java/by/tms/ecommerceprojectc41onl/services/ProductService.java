@@ -12,7 +12,9 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -128,6 +130,25 @@ public class ProductService {
                 .stream()
                 .map(product -> toCard(product, favouriteIds))
                 .toList();
+    }
+
+    /**
+     * Карточки переданных товаров, доступные по идентификатору товара.
+     * Используется там, где вместе с ProductCardDto нужны дополнительные данные,
+     * например дата покупки.
+     */
+    public Map<Long, ProductCardDto> getProductCardsById(List<Product> products, @Nullable User user) {
+        Set<Long> favouriteIds = getFavouriteIds(user);
+        Map<Long, ProductCardDto> cardsById = new LinkedHashMap<>();
+
+        for (Product product : products) {
+            cardsById.computeIfAbsent(
+                    product.getId(),
+                    productId -> toCard(product, favouriteIds)
+            );
+        }
+
+        return cardsById;
     }
 
     /**
