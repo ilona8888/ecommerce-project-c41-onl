@@ -2,19 +2,22 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<!-- Выпадающее окно: фильтр по разделам каталога -->
+<!-- Выпадающее окно: каталог товаров / категории -->
 <div class="offcanvas offcanvas-end offcanvas-filter" tabindex="-1"
      id="filterOffcanvas" aria-labelledby="filterOffcanvasLabel" th:fragment="filterPanel">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="filterOffcanvasLabel">Фильтр</h5>
+        <h5 class="offcanvas-title" id="filterOffcanvasLabel">Каталог товаров</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
     </div>
-    <div class="offcanvas-body d-flex flex-column">
-        <!-- Тут будет список чекбоксов с разделами каталога -->
-        <div class="placeholder-box w-100"></div>
 
-        <div class="mt-auto text-end">
-            <button class="btn btn-brand" type="button">Применить</button>
+    <div class="offcanvas-body d-flex flex-column p-3">
+        <div class="list-group w-100">
+            <a th:each="category : ${allCategories}"
+               th:href="@{/(categoryId=${category.id})}"
+               class="list-group-item list-group-item-action border-0 mb-1 rounded"
+               th:text="${category.name}">
+                Название категории
+            </a>
         </div>
     </div>
 </div>
