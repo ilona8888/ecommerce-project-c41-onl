@@ -160,4 +160,39 @@ public class ProductService {
     private Double findRatingByProduct(Product product){
         return reviewDao.getProductRating(product.getId());
     }
+
+    // Метод для фильтрации
+    public List<ProductCardDto> getProductsByCategories(List<Long> categoryIds, @Nullable User user) {
+        Set<Long> favouriteIds = getFavouriteIds(user);
+
+        return productDao.getByCategories(categoryIds)
+                .stream()
+                .map(product -> toCard(product, favouriteIds))
+                .toList();
+    }
+
+    // TODO : Реализовать
+    public List<ProductCardDto> getAllProductCards() {
+        return productDao.getAll()
+                .stream()
+                .map(this::mapToProductCardDto)
+                .toList();
+    }
+
+    // Общий приватный метод для преобразования Product в ProductCardDto
+    private ProductCardDto mapToProductCardDto(Product product) {
+        Long photoId = productPhotoDao
+                .getPhotoIdByProductId(product.getId())
+                .orElse(null);
+
+        return new ProductCardDto(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getDescription(),
+                photoId,
+                0.0,      // score — пока нет рейтинга
+                false     // favourite — пока нет избранного
+        );
+    }
 }
