@@ -88,7 +88,8 @@ public class ReviewController {
                 .anyMatch(review -> review.getUser() != null
                         && user.getId().equals(review.getUser().getId()));
         if (!reviewExists) {
-            redirectAttributes.addFlashAttribute("reviewError", "Сначала поставьте оценку.");
+            redirectAttributes.addFlashAttribute("reviewError", "Оцените товар");
+            redirectAttributes.addFlashAttribute("reviewErrorProductId", productId);
             return "redirect:/purchases";
         }
 

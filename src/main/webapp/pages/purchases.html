@@ -60,6 +60,13 @@
                             <!-- Компактная форма отзыва -->
                             <div class="mt-auto border-top pt-3">
 
+                                <div th:if="${reviewError != null and reviewErrorProductId == purchase.product.id}"
+                                     th:text="${reviewError}"
+                                     class="alert alert-warning py-2"
+                                     role="alert">
+                                    Оцените товар
+                                </div>
+
                                 <!-- 1. Форма для выставления оценки (звёзды) -->
                                 <form th:action="@{/reviews}" method="POST" class="mb-2">
                                     <input type="hidden" name="productId" th:value="${purchase.product.id}" />
