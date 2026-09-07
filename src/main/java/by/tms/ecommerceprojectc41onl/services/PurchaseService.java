@@ -23,12 +23,8 @@ public class PurchaseService {
     }
 
     public void buyProduct(Long productId, User user) {
-       Product product = productDao.findById(productId); //TODO : Реализовать метод в классе ProductDao
-
-        // TODO : Раскомментировать когда будет product (строчка 28)
-        if (product == null) {
-            throw new IllegalArgumentException("Товар с ID " + productId + " не найден");
-        }
+       Product product = productDao.findById(productId).
+               orElseThrow(() -> new IllegalArgumentException("Товар с ID " + productId + " не найден"));
 
         Purchase purchase = new Purchase();
         purchase.setUser(user);

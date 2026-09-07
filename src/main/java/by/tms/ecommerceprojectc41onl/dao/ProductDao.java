@@ -11,6 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -101,7 +102,7 @@ public class ProductDao {
         return products;
     }
 
-    public Product findById(Long id) {
+    public Optional<Product> findById(Long id) {
         String sql = "SELECT * FROM products WHERE id = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -115,13 +116,13 @@ public class ProductDao {
                     product.setPrice(resultSet.getBigDecimal("price"));
                     product.setDescription(resultSet.getString("description"));
 
-                    return product;
+                    return Optional.of(product);
                 }
             }
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка поиска товара по ID", e);
         }
-        return null;
+        return Optional.empty();
     }
 
     public List<Product> getAll() {

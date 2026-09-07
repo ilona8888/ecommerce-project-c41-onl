@@ -34,14 +34,6 @@ public class ReviewController {
         this.sessionService = sessionService;
     }
 
-    @GetMapping("/product")
-    public String productDetails(@RequestParam(value = "productId", required = false) Long productId,
-                                 Model model) {
-        model.addAttribute("reviews",
-                productId == null ? List.of() : reviewDao.findByProductId(productId));
-        return "product-details";
-    }
-
     @PostMapping("/reviews")
     public String addReview(@Valid @ModelAttribute("review") Review review,
                             BindingResult bindingResult,

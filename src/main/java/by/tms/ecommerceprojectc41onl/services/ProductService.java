@@ -216,4 +216,18 @@ public class ProductService {
                 false     // favourite — пока нет избранного
         );
     }
+
+    public ProductCardDto getProductCardById(Long productId, @Nullable User user) {
+        if (productId == null) {
+            throw new IllegalArgumentException("productId must not be null");
+        }
+
+        return productDao.findById(productId)
+                .map(product -> {
+                    Set<Long> favouriteIds = getFavouriteIds(user);
+                    return toCard(product, favouriteIds);
+                })
+                .orElseThrow(() -> new IllegalStateException("Товар не найден по id: " + productId));
+    }
+
 }

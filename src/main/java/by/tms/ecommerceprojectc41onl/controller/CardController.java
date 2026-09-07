@@ -1,8 +1,11 @@
 package by.tms.ecommerceprojectc41onl.controller;
 
+import by.tms.ecommerceprojectc41onl.dao.ReviewDao;
 import by.tms.ecommerceprojectc41onl.dto.CreateProductDto;
 import by.tms.ecommerceprojectc41onl.dto.CreateProductRequestDto;
 import by.tms.ecommerceprojectc41onl.dto.FileData;
+import by.tms.ecommerceprojectc41onl.dto.ProductCardDto;
+import by.tms.ecommerceprojectc41onl.model.Product;
 import by.tms.ecommerceprojectc41onl.model.User;
 import by.tms.ecommerceprojectc41onl.services.CategoryService;
 import by.tms.ecommerceprojectc41onl.services.ProductService;
@@ -17,9 +20,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Контроллер для работы с карточками товаров.
@@ -34,6 +39,8 @@ public class CardController {
     private final ProductService productService;
 
     private final SessionService sessionService;
+
+    private final ReviewDao reviewDao;
 
     /**
      * Создание новой карточки товара.
@@ -90,5 +97,15 @@ public class CardController {
         return "redirect:/";
     }
 
+    @GetMapping("/product")
+    public String productDetails(@RequestParam(value = "productId", required = false) Long productId,
+                                 Model model, HttpSession session) {
+        model.addAttribute("reviews",
+                productId == null ? List.of() : reviewDao.findByProductId(productId));
+        ProductCardDto productCard = productService.getProductCardById(productId,sessionService.getCurrentUser(session));
+
+        model.addAttribute("product",productCard);
+        return "product-details";
+    }
 
 }
