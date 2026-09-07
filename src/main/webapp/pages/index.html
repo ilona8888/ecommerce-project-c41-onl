@@ -22,13 +22,17 @@
             <p class="text-danger fs-5" th:text="${notFoundMessage}"></p>
         </div>
 
-        <!-- Выбираем список: сначала products (поиск), иначе productCards (каталог) -->
+
+<!--        products(поиск)-->
+<!--        productCards(каталог)-->
+
+        <!-- Выводим заголовок, если products не пустой -->
         <th:block th:if="${products != null and !#lists.isEmpty(products)}">
             <h2 class="mb-3">Результаты поиска:</h2>
         </th:block>
 
         <!-- БЛОК 1: Сообщение, если товаров нет -->
-        <div th:if="${productCards == null or #lists.isEmpty(productCards)}"
+        <div th:if="${products == null and (productCards == null or #lists.isEmpty(productCards))}"
              class="w-100 bg-light p-3 d-flex flex-column justify-content-center align-items-center text-center"
              style="min-height: 400px;">
             <h4 class="text-muted mb-3">Товаров в данной категории пока нет</h4>
@@ -37,10 +41,10 @@
         </div>
 
         <!-- БЛОК 2: Карточки товаров, отображаются только если они есть -->
-        <div th:if="${productCards != null and !#lists.isEmpty(productCards)}" class="w-100 bg-light p-3"
-             style="min-height: 400px;">
+        <div th:if="${(products != null and !#lists.isEmpty(products)) or (productCards != null and !#lists.isEmpty(productCards))}"
+             class="w-100 bg-light p-3" style="min-height: 400px;">
             <div class="row g-4">
-                <div th:each="product : ${productCards}"
+                <div th:each="product : ${products != null and !#lists.isEmpty(products) ? products : productCards}"
                      class="col-6 col-md-4 col-lg-3">
 
                     <div class="card w-100" style="max-width: 18rem;">
