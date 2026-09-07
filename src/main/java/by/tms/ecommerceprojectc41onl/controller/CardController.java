@@ -102,9 +102,10 @@ public class CardController {
                                  Model model, HttpSession session) {
         model.addAttribute("reviews",
                 productId == null ? List.of() : reviewDao.findByProductId(productId));
-        ProductCardDto productCard = productService.getProductCardById(productId,sessionService.getCurrentUser(session));
 
+        ProductCardDto productCard = productService.getProductCardById(productId,sessionService.getCurrentUser(session));
         model.addAttribute("product",productCard);
+
         return "product-details";
     }
 

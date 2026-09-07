@@ -32,7 +32,7 @@ public class PurchaseService {
         purchase.setPurchaseDate(LocalDateTime.now());
         purchase.setCost(product.getPrice());
 
-        purchaseDao.save(purchase); //TODO : Реализовать метод в классе ProductDao PurchaseDao
+        purchaseDao.save(purchase);
     }
 
     public List<Purchase> getCurrentUserPurchases(User user) {

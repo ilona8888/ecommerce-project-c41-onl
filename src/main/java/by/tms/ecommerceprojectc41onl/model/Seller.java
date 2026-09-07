@@ -14,10 +14,4 @@ public class Seller {
     private String contactInfo;
     private List<Product> products = new ArrayList<>();
 
-    public Seller(User user, String details, String contactInfo) {
-        this.user = user;
-        this.details = details;
-        this.contactInfo = contactInfo;
-    }
-
 }

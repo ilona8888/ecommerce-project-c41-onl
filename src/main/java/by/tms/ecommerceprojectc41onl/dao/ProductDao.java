@@ -75,7 +75,6 @@ public class ProductDao {
         return product;
     }
 
-    // TODO : Данный метод должен брать список товаров из БД(так как коллекция productsList(строчка 65) всегда пустая)
     public List<Product> searchProducts(String keyword) {
         if (keyword == null || keyword.isBlank()) {
             return Collections.emptyList();

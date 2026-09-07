@@ -35,12 +35,10 @@ public class AuthFilter implements Filter {
         // Гость
         if (user == null) {
 
-            // TODO : пути пересмотреть
             if (path.startsWith("/favorites") ||
                     path.startsWith("/orders") ||
                     path.startsWith("/seller") ||
-                    path.startsWith("/admin")) { // TODO: Реализовать пользователя функционал страницы Admin(создает только категории)
-
+                    path.startsWith("/admin")) {
                 res.sendRedirect("/login");
                 return;
             }
@@ -67,7 +65,6 @@ public class AuthFilter implements Filter {
             res.sendRedirect("/403");
             return;
         }
-        // TODO : пути пересмотреть
         // Покупательские зоны — доступны BUYER и SELLER
         if ((path.startsWith("/favorites") ||
                 path.startsWith("/product") ||

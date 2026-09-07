@@ -33,18 +33,6 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    // for register
-    public User(Long id, String userName, String email, String passwordHash, String firstName, String lastName, LocalDate birthday, UserRole role) {
-        this.id = id;
-        this.userName = userName;
-        this.email = email;
-        this.passwordHash = passwordHash;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthday = birthday;
-        this.role = role;
-    }
-
     public User(Long id, String userName, String email, String passwordHash, boolean status, String firstName, String lastName, LocalDate birthday, UserRole role) {
         this.id = id;
         this.userName = userName;

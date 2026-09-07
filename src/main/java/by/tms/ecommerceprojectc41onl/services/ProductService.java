@@ -192,31 +192,6 @@ public class ProductService {
                 .toList();
     }
 
-    // TODO : Реализовать
-    public List<ProductCardDto> getAllProductCards() {
-        return productDao.getAll()
-                .stream()
-                .map(this::mapToProductCardDto)
-                .toList();
-    }
-
-    // Общий приватный метод для преобразования Product в ProductCardDto
-    private ProductCardDto mapToProductCardDto(Product product) {
-        Long photoId = productPhotoDao
-                .getPhotoIdByProductId(product.getId())
-                .orElse(null);
-
-        return new ProductCardDto(
-                product.getId(),
-                product.getName(),
-                product.getPrice(),
-                product.getDescription(),
-                photoId,
-                0.0,      // score — пока нет рейтинга
-                false     // favourite — пока нет избранного
-        );
-    }
-
     public ProductCardDto getProductCardById(Long productId, @Nullable User user) {
         if (productId == null) {
             throw new IllegalArgumentException("productId must not be null");

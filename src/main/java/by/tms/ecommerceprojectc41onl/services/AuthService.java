@@ -27,12 +27,8 @@ public class AuthService {
 
         User user = userOptional.get();
 
-//        //Сверяем хэш пароля //TODO : раскомментировать после реализации регистрации
-//        if (!checkPassword(password,user.getPasswordHash())) {
-//            throw new AuthenticationException("Incorrect email or password!!");
-//        }
-
-        if(!user.getPasswordHash().equals(password)) {
+        //Сверяем хэш пароля
+        if (!checkPassword(password,user.getPasswordHash())) {
             throw new AuthenticationException("Incorrect email or password!!");
         }
 
